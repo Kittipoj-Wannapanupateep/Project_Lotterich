@@ -1,0 +1,17 @@
+Frontend
+npm run dev
+npm install
+npm install chart.js
+npm install chart.js @fortawesome/fontawesome-free
+
+Backend
+go run main.go
+go run cmd/main.go
+
+Github
+echo
+git init
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Kittipoj-Wannapanupateep/Fullstack_Lotterich.git
+git push -u origin main

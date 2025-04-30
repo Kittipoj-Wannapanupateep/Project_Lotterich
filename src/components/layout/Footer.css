@@ -1,0 +1,14 @@
+/* ------------------------ Footer ------------------------ */
+.footer {
+    background-color: #242424;
+    padding: 1rem 0;
+    margin-top: auto;
+    border-top: 1px solid #ffd700;
+}
+
+.footer p {
+    margin: 0;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 500;
+} 
