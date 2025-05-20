@@ -13,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import ProfilePage from './pages/ProfilePage'
 import ChangePasswordPage from './pages/ChangePasswordPage'
 import DeleteAccountPage from './pages/DeleteAccountPage'
+import CollectionPage from './pages/CollectionPage'
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<AuthenticatedHome />} />
-              <Route path="/collection" element={<div>Collection Page</div>} />
+              <Route path="/collection" element={<CollectionPage />} />
               <Route path="/overview" element={<div>Overview Page</div>} />
               <Route path="/statistics" element={<div>Statistics Page</div>} />
               <Route path="/profile" element={<ProfilePage />} />

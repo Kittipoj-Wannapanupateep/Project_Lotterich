@@ -8,7 +8,7 @@ import (
 )
 
 // SetupRoutes configures all the routes for the application
-func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
+func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collectionHandler *handlers.CollectionHandler) {
 	// API group
 	api := router.Group("/api")
 
@@ -25,5 +25,11 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
 		protected.PATCH("/users/me", authHandler.UpdateCurrentUser)
 		protected.POST("/users/change-password", authHandler.ChangePassword)
 		protected.DELETE("/users/me", authHandler.DeleteAccount)
+
+		// Collection routes
+		protected.GET("/collection", collectionHandler.GetAll)
+		protected.POST("/collection", collectionHandler.Create)
+		protected.PUT("/collection/:id", collectionHandler.Update)
+		protected.DELETE("/collection/:id", collectionHandler.Delete)
 	}
 }
