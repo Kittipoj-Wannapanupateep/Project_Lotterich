@@ -193,14 +193,24 @@ main {
     }
 
     /* Responsive สำหรับหน้า Login เท่านั้น */
+    .user-profile-responsive-wrapper {
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .user-profile-link {
+        width: 100% !important;
+        display: block !important;
+        padding: 0 !important;
+    }
     .user-profile-container {
-        order: -1;
-        margin: 0 0 1rem 0;
-        justify-content: center;
-        background-color: #242424;
-        width: 100%;
-        border-radius: 8px;
-        padding: 1rem;
+        width: 100% !important;
+        border-radius: 12px !important;
+        padding: 1rem 2rem !important;
+        margin: 0 !important;
+        box-sizing: border-box;
+        justify-content: flex-start !important;
     }
 
     .navbar-collapse .d-flex {
@@ -214,5 +224,29 @@ main {
         min-width: 150px !important;
         width: 100% !important;
         text-align: center !important;
+    }
+}
+
+.user-profile-responsive-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .user-profile-responsive-wrapper {
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .user-profile-container {
+        width: 100% !important;
+        border-radius: 12px !important;
+        padding: 1rem 0.5rem !important;
+        margin: 0 !important;
+        justify-content: center !important;
+        box-sizing: border-box;
     }
 }
