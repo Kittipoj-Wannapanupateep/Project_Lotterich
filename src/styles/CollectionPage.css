@@ -1051,3 +1051,19 @@ body {
     padding-right: 0 !important;
     overflow: auto !important;
 }
+
+/* Modal open styles */
+body.modal-open {
+  overflow: hidden !important;
+  padding-right: 17px; /* Prevent content shift when scrollbar disappears */
+}
+
+.modal {
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  margin: 1.75rem auto;
+  max-height: calc(100vh - 3.5rem);
+  overflow-y: auto;
+}
