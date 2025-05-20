@@ -79,12 +79,12 @@ const CollectionPage = () => {
         showSuccessModal ||
         showFilterModal
       ) {
-        document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
       } else {
-        document.body.classList.remove('modal-open');
+        document.body.style.overflow = 'auto';
       }
       return () => {
-        document.body.classList.remove('modal-open');
+        document.body.style.overflow = 'auto';
       };
     }, [
       showAddModal,
@@ -596,13 +596,13 @@ const CollectionPage = () => {
     const validateAddForm = () => {
       const errors = {};
       if (!/^\d{6}$/.test(addLotteryNumber)) {
-        errors.lotteryNumber = 'กรุณากรอกเลขสลาก 6 หลัก';
+        errors.lotteryNumber = 'กรอกเลขสลาก 6 หลัก';
       }
       if (!addTicketCount || isNaN(addTicketCount) || parseInt(addTicketCount) < 1) {
-        errors.ticketCount = 'กรุณากรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
+        errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
       if (addWinningNumber && !/^\d{6}$/.test(addWinningNumber)) {
-        errors.winningNumber = 'กรุณากรอกเลข 6 หลัก';
+        errors.winningNumber = 'กรอกเลขสลาก 6 หลักที่ถูกรางวัล';
       }
       return errors;
     };
@@ -611,13 +611,13 @@ const CollectionPage = () => {
     const validateEditForm = () => {
       const errors = {};
       if (!/^\d{6}$/.test(editLotteryNumber)) {
-        errors.lotteryNumber = 'กรุณากรอกเลขสลาก 6 หลัก';
+        errors.lotteryNumber = 'กรอกเลขสลาก 6 หลัก';
       }
       if (!editTicketCount || isNaN(editTicketCount) || parseInt(editTicketCount) < 1) {
-        errors.ticketCount = 'กรุณากรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
+        errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
       if (editWinningNumber && !/^\d{6}$/.test(editWinningNumber)) {
-        errors.winningNumber = 'กรุณากรอกเลข 6 หลัก';
+        errors.winningNumber = 'กรอกเลขสลาก 6 หลักที่ถูกรางวัล';
       }
       return errors;
     };
@@ -736,7 +736,12 @@ const CollectionPage = () => {
         
 
             {/* Add Modal */}
-        <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
+        <Modal 
+          show={showAddModal} 
+          onHide={() => setShowAddModal(false)} 
+          centered
+          scrollable
+        >
           <Modal.Header closeButton>
             <Modal.Title>เพิ่มข้อมูลสลาก</Modal.Title>
           </Modal.Header>
@@ -836,6 +841,10 @@ const CollectionPage = () => {
                     maxLength="6" 
                     value={addWinningNumber} 
                     onChange={e => setAddWinningNumber(e.target.value.replace(/\D/g, '').slice(0,6))}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
                   />
                   {addErrors.winningNumber && <div className="invalid-feedback" style={{display:'block'}}>{addErrors.winningNumber}</div>}
                 </div>
@@ -853,7 +862,12 @@ const CollectionPage = () => {
         </Modal>
 
             {/* Edit Modal */}
-        <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+        <Modal 
+          show={showEditModal} 
+          onHide={() => setShowEditModal(false)} 
+          centered
+          scrollable
+        >
           <Modal.Header closeButton>
             <Modal.Title>แก้ไขข้อมูลสลาก</Modal.Title>
           </Modal.Header>
@@ -953,6 +967,10 @@ const CollectionPage = () => {
                                                 maxLength="6" 
                                                 value={editWinningNumber} 
                                                 onChange={e => setEditWinningNumber(e.target.value.replace(/\D/g, '').slice(0,6))}
+                                                autoComplete="off"
+                                                autoCorrect="off"
+                                                autoCapitalize="off"
+                                                spellCheck="false"
                                             />
                                             {editErrors.winningNumber && <div className="invalid-feedback" style={{display:'block'}}>{editErrors.winningNumber}</div>}
                                         </div>
@@ -975,6 +993,7 @@ const CollectionPage = () => {
           onHide={() => setShowSuccessModal(false)} 
           centered
           dialogClassName="success-modal"
+          scrollable
         >
           <Modal.Body className="text-center p-4">
             <FaCheckCircle className="text-success mb-3" style={{ fontSize: '3rem' }} />
@@ -999,6 +1018,7 @@ const CollectionPage = () => {
           onHide={() => setShowDeleteConfirmModal(false)} 
           centered
           dialogClassName="delete-confirm-modal"
+          scrollable
         >
           <Modal.Body className="text-center p-4">
             <FaExclamationTriangle className="text-warning mb-3" style={{ fontSize: '3rem' }} />
@@ -1021,6 +1041,7 @@ const CollectionPage = () => {
           onHide={() => setShowDeleteSuccessModal(false)} 
           centered
           dialogClassName="delete-success-modal"
+          scrollable
         >
           <Modal.Body className="text-center p-4">
             <FaCheckCircle className="text-success mb-3" style={{ fontSize: '3rem' }} />
@@ -1039,6 +1060,7 @@ const CollectionPage = () => {
           show={showFilterModal} 
           onHide={() => setShowFilterModal(false)} 
           centered
+          scrollable
         >
           <Modal.Header closeButton>
             <Modal.Title>กรองข้อมูลสลาก</Modal.Title>
