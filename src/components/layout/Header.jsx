@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Navbar, Nav, Container } from 'react-bootstrap'
 import { useAuth } from '../../context/AuthContext'
 import './Header.css'
@@ -7,6 +7,7 @@ import { useRef, useState } from 'react'
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation();
   const [expanded, setExpanded] = useState(false);
 
   const scrollToTop = () => {
@@ -82,8 +83,16 @@ const Header = () => {
             )}
             {!isAuthenticated && (
               <div className="d-flex gap-2 ms-auto">
-                <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>Create Account</Link>
-                <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>Login</Link>
+                {location.pathname === '/login' ? (
+                  <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>Create Account</Link>
+                ) : location.pathname === '/register' ? (
+                  <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>Login</Link>
+                ) : (
+                  <>
+                    <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>Create Account</Link>
+                    <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>Login</Link>
+                  </>
+                )}
               </div>
             )}
           </Navbar.Collapse>

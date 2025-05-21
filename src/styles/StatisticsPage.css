@@ -1,0 +1,381 @@
+/* Common Styles */
+.section-title {
+    color: #FFD700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Section 1: Latest Results */
+.statistics-section-1 {
+    padding: 4rem 0;
+    background: #333333;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.draw-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.draw-selector .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #2a2a2a;
+    color: #FFD700;
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+    padding: 0.5rem 3.5rem 0.5rem 1rem;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.draw-selector::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid #FFD700;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+
+.prize-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.main-prize {
+    text-align: center;
+    padding: 2rem;
+    background: #2a2a2a;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #FFD700;
+}
+
+.main-prize h3 {
+    color: #FFD700;
+    margin-bottom: 1rem;
+}
+
+.prize-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.other-prizes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.prize-item {
+    background: #2a2a2a;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #FFD700;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.prize-item:hover {
+    transform: translateY(-5px);
+}
+
+.prize-item h4 {
+    color: #FFD700;
+    margin-bottom: 1rem;
+}
+
+.prize-numbers {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Section 2: Top 5 Numbers */
+.statistics-section-2 {
+    padding: 4rem 0;
+    background: #242424;
+}
+
+.top-numbers {
+    background: #2a2a2a;
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid #FFD700;
+}
+
+.top-numbers-list {
+    margin-bottom: 2rem;
+}
+
+.number-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #333333;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #FFD700;
+}
+
+.number-item .rank {
+    color: #FFD700;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    width: 40px;
+    text-align: center;
+}
+
+.number-item .number {
+    color: #FFD700;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    width: 60px;
+    text-align: center;
+}
+
+.number-item .count {
+    color: #ffffff;
+    font-size: 1.1rem;
+    flex: 1;
+}
+
+.chart-container {
+    height: 300px;
+    margin-top: 2rem;
+}
+
+/* Section 3: Number Checker */
+.statistics-section-3 {
+    padding: 4rem 0;
+    background: #333333;
+}
+
+.number-checker {
+    background: #2a2a2a;
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid #FFD700;
+}
+
+.checker-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.checker-form label {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.checker-form .form-control {
+    background-color: #333333;
+    border: 1px solid #FFD700;
+    color: #ffffff;
+    padding: 0.8rem;
+    border-radius: 8px;
+}
+
+.checker-form .form-control::placeholder {
+    color: #666666;
+}
+
+.checker-form .form-control:focus {
+    background-color: #333333;
+    border-color: #FFD700;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    min-height: 1.2rem;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.result-box {
+    background: #333333;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #FFD700;
+}
+
+.result-box h4 {
+    color: #FFD700;
+    margin-bottom: 1rem;
+}
+
+.result-box p {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.winning-dates {
+    color: #ffffff;
+}
+
+.winning-dates ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.winning-dates li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #444444;
+}
+
+.winning-dates li:last-child {
+    border-bottom: none;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #FFD700;
+    color: #000000;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #ccac00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .draw-selector .form-select {
+        width: 100%;
+    }
+
+    .other-prizes {
+        grid-template-columns: 1fr;
+    }
+
+    .number-item {
+        flex-direction: row;
+        text-align: left;
+        gap: 0.5rem;
+    }
+
+    .number-item .rank,
+    .number-item .number {
+        margin-right: 1rem;
+    }
+
+    .number-item .count {
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    .statistics-section-1,
+    .statistics-section-2,
+    .statistics-section-3 {
+        padding: 2rem 0;
+    }
+
+    .prize-number {
+        font-size: 2rem;
+    }
+
+    .prize-numbers {
+        font-size: 2rem;
+    }
+
+    .number-item .number {
+        font-size: 1.8rem;
+    }
+
+    .number-item .rank {
+        font-size: 1.3rem;
+    }
+
+    .number-item .count {
+        font-size: 1rem;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+    .draw-selector .form-select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .prize-number {
+        font-size: 1.8rem;
+    }
+
+    .prize-numbers {
+        font-size: 1.8rem;
+    }
+
+    .number-item .number {
+        font-size: 1.5rem;
+    }
+
+    .number-item .rank {
+        font-size: 1.2rem;
+    }
+
+    .number-item .count {
+        font-size: 0.9rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .draw-selector {
+        width: 100%;
+    }
+    .draw-selector .form-select {
+        font-size: 1rem;
+        padding-right: 3.5rem;
+    }
+}

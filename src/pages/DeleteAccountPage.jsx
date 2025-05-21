@@ -54,7 +54,7 @@ const DeleteAccountPage = () => {
   }
 
   return (
-    <main className="container-fluid p-0">
+    <div className="container-fluid p-0">
       <div className="delete-container">
         <div className="delete-card">
           <div className="delete-form">
@@ -128,7 +128,7 @@ const DeleteAccountPage = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 

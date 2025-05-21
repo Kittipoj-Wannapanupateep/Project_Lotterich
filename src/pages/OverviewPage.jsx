@@ -25,12 +25,14 @@ const OverviewPage = () => {
     const donutChart2Ref = useRef(null);
     const donutChart2Instance = useRef(null);
     const [donut1, setDonut1] = useState({ labels: [], data: [], colors: [] });
+    const [hasCollection, setHasCollection] = useState(false);
 
     useEffect(() => {
         const fetchStats = async () => {
             setLoading(true);
             try {
                 const collection = await getCollection();
+                setHasCollection(collection && collection.length > 0);
                 let totalTickets = 0;
                 let totalSpent = 0;
                 let totalWins = 0;
@@ -52,6 +54,25 @@ const OverviewPage = () => {
                         key,
                     });
                     spendingMap[key] = 0;
+                }
+                if (!collection || collection.length === 0) {
+                    setMonthlySpending({
+                        labels: months.map(m => m.label),
+                        data: months.map(() => 0)
+                    });
+                    setStats({
+                        totalTickets: 0,
+                        totalSpent: 0,
+                        totalWins: 0,
+                        totalPrize: 0,
+                        netProfit: 0,
+                        lastWinningNumber: '-',
+                        winPercent: 0,
+                        losePercent: 0
+                    });
+                    setDonut1({ labels: [], data: [], colors: [] });
+                    setLoading(false);
+                    return;
                 }
                 collection.forEach(item => {
                     totalTickets += item.ticketQuantity;
@@ -150,7 +171,7 @@ const OverviewPage = () => {
                     maintainAspectRatio: false,
                     scales: {
                         x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                        y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                        y: { min: 0, ticks: { color: '#fff' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
                     },
                     plugins: {
                         legend: {
@@ -329,7 +350,7 @@ const OverviewPage = () => {
                 {/* Section 2 & 3: Line Chart and Donut Charts */}
                 <section className="row" id="charts-area">
                     {/* Line Chart */}
-                    <div className="col-md-8">
+                    <div className={hasCollection ? "col-md-8" : "col-12"}>
                         <div className="chart-box shadow-sm rounded p-3">
                             <h5 className="mb-3">กราฟรายจ่ายต่อเดือนย้อนหลัง 6 เดือน</h5>
                             <div className="line-chart-container">
@@ -339,20 +360,22 @@ const OverviewPage = () => {
                     </div>
 
                     {/* Donut Charts */}
-                    <div className="col-md-4">
-                        <div className="donut-chart-box shadow-sm rounded p-3 mb-4">
-                            <h6 className="mb-3">สัดส่วนรายได้จากเงินลงทุน</h6>
-                            <div className="donut-chart-container">
-                                <canvas ref={donutChart1Ref}></canvas>
+                    {hasCollection && (
+                        <div className="col-md-4">
+                            <div className="donut-chart-box shadow-sm rounded p-3 mb-4">
+                                <h6 className="mb-3">สัดส่วนรายได้จากเงินลงทุน</h6>
+                                <div className="donut-chart-container">
+                                    <canvas ref={donutChart1Ref}></canvas>
+                                </div>
+                            </div>
+                            <div className="donut-chart-box shadow-sm rounded p-3">
+                                <h6 className="mb-3">อัตราการถูกรางวัล</h6>
+                                <div className="donut-chart-container">
+                                    <canvas ref={donutChart2Ref}></canvas>
+                                </div>
                             </div>
                         </div>
-                        <div className="donut-chart-box shadow-sm rounded p-3">
-                            <h6 className="mb-3">อัตราการถูกรางวัล</h6>
-                            <div className="donut-chart-container">
-                                <canvas ref={donutChart2Ref}></canvas>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </section>
             </div>
         </div>

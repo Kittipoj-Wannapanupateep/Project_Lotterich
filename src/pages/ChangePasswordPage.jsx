@@ -51,7 +51,7 @@ const ChangePasswordPage = () => {
   }
 
   return (
-    <main className="container-fluid p-0">
+    <div className="container-fluid p-0">
       <div className="profile-container">
         <div className="profile-card">
           <div className="profile-form">
@@ -155,7 +155,7 @@ const ChangePasswordPage = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 
