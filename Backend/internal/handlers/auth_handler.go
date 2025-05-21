@@ -13,13 +13,15 @@ import (
 
 // AuthHandler handles authentication related requests
 type AuthHandler struct {
-	userRepo *repositories.UserRepository
+	userRepo       *repositories.UserRepository
+	collectionRepo *repositories.CollectionRepository
 }
 
 // NewAuthHandler creates a new AuthHandler
-func NewAuthHandler(userRepo *repositories.UserRepository) *AuthHandler {
+func NewAuthHandler(userRepo *repositories.UserRepository, collectionRepo *repositories.CollectionRepository) *AuthHandler {
 	return &AuthHandler{
-		userRepo: userRepo,
+		userRepo:       userRepo,
+		collectionRepo: collectionRepo,
 	}
 }
 
@@ -212,6 +214,12 @@ func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.CurrentPassword))
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Current password is incorrect"})
+		return
+	}
+
+	// Delete all collections for this user (by email)
+	if err := h.collectionRepo.DeleteByEmail(user.Email); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user's collections"})
 		return
 	}
 

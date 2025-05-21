@@ -62,3 +62,11 @@ func (r *CollectionRepository) Delete(id primitive.ObjectID, email string) error
 	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id, "email": email})
 	return err
 }
+
+// DeleteByEmail deletes all collections for a given email
+func (r *CollectionRepository) DeleteByEmail(email string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := r.collection.DeleteMany(ctx, bson.M{"email": email})
+	return err
+}

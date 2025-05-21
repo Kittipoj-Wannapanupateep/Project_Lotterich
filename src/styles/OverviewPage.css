@@ -1,0 +1,109 @@
+/* ---------- Overview Page Container ---------- */
+.overview-page {
+    padding-top: 2rem;
+}
+
+/* ---------- Stat Boxes ---------- */
+#stat-boxes .stat-box {
+    background-color: #2c2c2c;
+    color: #fff;
+    padding: 1rem;
+    border: 1px solid #ffd700;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    min-height: 100px;
+}
+
+.stat-title {
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+/* ---------- Chart Boxes ---------- */
+.chart-box,
+.donut-chart-box {
+    background-color: #2c2c2c !important;
+    border: 1px solid #ffd700;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.chart-box {
+    height: 400px;
+}
+
+.donut-chart-box {
+    height: 188px;
+    margin-bottom: 16px;
+}
+
+.donut-chart-box:last-child {
+    margin-bottom: 0;
+}
+
+.chart-box h5,
+.donut-chart-box h6 {
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.line-chart-container,
+.donut-chart-container {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+.line-chart-container {
+    min-height: 300px;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ---------- Equal Height Chart Area ---------- */
+#charts-area {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+#charts-area .col-md-8,
+#charts-area .col-md-4 {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .chart-box,
+    .donut-chart-box {
+        height: 250px;
+        margin-bottom: 24px;
+    }
+    #stat-boxes {
+        order: 2;
+    }
+    #charts-area {
+        order: 1;
+    }
+    .line-chart-container {
+        min-height: 200px;
+    }
+}
