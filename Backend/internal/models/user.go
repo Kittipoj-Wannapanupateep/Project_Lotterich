@@ -14,6 +14,7 @@ type User struct {
 	PasswordHash string             `bson:"password_hash" json:"-"`
 	CreatedAt    time.Time          `bson:"created_at" json:"createdAt"`
 	UpdatedAt    time.Time          `bson:"updated_at" json:"updatedAt"`
+	Role         string             `bson:"role" json:"role"`
 }
 
 // UserLogin represents the login credentials
@@ -30,6 +31,7 @@ type UserRegistration struct {
 	Name     string `json:"name" binding:"required,min=2"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6"`
+	Role     string `json:"role"` // optional, default "user"
 }
 
 // UserResponse represents the user data returned in API responses
@@ -38,6 +40,7 @@ type UserResponse struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"createdAt"`
+	Role      string    `json:"role"`
 }
 
 // UpdateUserRequest สำหรับ PATCH /api/users/me
@@ -64,5 +67,6 @@ func (u *User) ToResponse() UserResponse {
 		Name:      u.Name,
 		Email:     u.Email,
 		CreatedAt: u.CreatedAt,
+		Role:      u.Role,
 	}
 }

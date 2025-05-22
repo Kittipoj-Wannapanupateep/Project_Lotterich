@@ -1,8 +1,11 @@
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import '../styles/NotFoundPage.css'
 
 const NotFoundPage = () => {
+  const { user, isAuthenticated } = useAuth();
+  const homeLink = isAuthenticated && user.role === 'admin' ? '/admin/manage' : '/';
   return (
     <div className="not-found-container fade-in">
       <Container>
@@ -15,7 +18,7 @@ const NotFoundPage = () => {
                 The page you are looking for might have been removed, had its name changed, 
                 or is temporarily unavailable.
               </p>
-              <Button as={Link} to="/" variant="" className="btn-minimize">
+              <Button as={Link} to={homeLink} variant="" className="btn-minimize">
                 Return to Home
               </Button>
             </div>

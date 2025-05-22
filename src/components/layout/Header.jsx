@@ -31,7 +31,7 @@ const Header = () => {
     <>
       <Navbar expand="lg" className="navbar" expanded={expanded} onToggle={setExpanded}>
         <Container fluid>
-          <Navbar.Brand as={Link} to="/" onClick={handleNavClick}>
+          <Navbar.Brand as={Link} to={isAuthenticated && user.role === 'admin' ? "/admin/manage" : "/"} onClick={handleNavClick}>
             <img src="/Image/Lotterich_Logo2.png" alt="Logo" className="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -52,9 +52,18 @@ const Header = () => {
               </div>
             )}
             <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
-              <Nav.Link as={Link} to="/" onClick={handleNavClick}>Home</Nav.Link>
-              {isAuthenticated ? (
+              {!isAuthenticated && (
+                <Nav.Link as={Link} to="/" onClick={handleNavClick}>Home</Nav.Link>
+              )}
+              {isAuthenticated && user.role === 'admin' ? (
                 <>
+                  <Nav.Link as={Link} to="/admin/manage" onClick={handleNavClick}>Manage</Nav.Link>
+                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick}>Statistics</Nav.Link>
+                  <Nav.Link as={Link} to="/" onClick={handleLogout}>Logout</Nav.Link>
+                </>
+              ) : isAuthenticated ? (
+                <>
+                  <Nav.Link as={Link} to="/" onClick={handleNavClick}>Home</Nav.Link>
                   <Nav.Link as={Link} to="/collection" onClick={handleNavClick}>Collection</Nav.Link>
                   <Nav.Link as={Link} to="/overview" onClick={handleNavClick}>Overview</Nav.Link>
                   <Nav.Link as={Link} to="/statistics" onClick={handleNavClick}>Statistics</Nav.Link>

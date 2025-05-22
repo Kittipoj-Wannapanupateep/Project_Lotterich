@@ -46,6 +46,11 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Email:        input.Email,
 		PasswordHash: string(hashedPassword),
 	}
+	if user.Email == "admin@gmail.com" {
+		user.Role = "admin"
+	} else {
+		user.Role = "user"
+	}
 
 	createdUser, err := h.userRepo.Create(user)
 	if err != nil {
@@ -82,7 +87,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	// Generate token (ส่ง input.RememberMe ไปด้วย)
-	token, err := utils.GenerateJWT(user.ID.Hex(), user.Name, user.Email, input.RememberMe)
+	token, err := utils.GenerateJWT(user.ID.Hex(), user.Name, user.Email, user.Role, input.RememberMe)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return

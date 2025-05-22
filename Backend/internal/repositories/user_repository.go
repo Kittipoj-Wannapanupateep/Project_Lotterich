@@ -45,6 +45,13 @@ func (r *UserRepository) Create(user models.User) (*models.User, error) {
 		return nil, err
 	}
 
+	// Set role
+	if user.Email == "admin@gmail.com" {
+		user.Role = "admin"
+	} else {
+		user.Role = "user"
+	}
+
 	// Set timestamps
 	now := time.Now()
 	user.CreatedAt = now

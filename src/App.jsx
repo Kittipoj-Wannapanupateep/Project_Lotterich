@@ -16,6 +16,7 @@ import DeleteAccountPage from './pages/DeleteAccountPage'
 import CollectionPage from './pages/CollectionPage'
 import OverviewPage from './pages/OverviewPage'
 import StatisticsPage from './pages/StatisticsPage'
+import ManagePage from './pages/ManagePage'
 
 function App() {
   return (
@@ -28,10 +29,15 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/statistics" element={<StatisticsPage/>} />
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute role="admin" />}>
+              <Route path="/admin/manage" element={<ManagePage />} />
+            </Route>
+            <Route element={<ProtectedRoute role="user" />}>
               <Route path="/home" element={<AuthenticatedHome />} />
               <Route path="/collection" element={<CollectionPage />} />
               <Route path="/overview" element={<OverviewPage />} />
+            </Route>
+            <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/change-password" element={<ChangePasswordPage />} />
               <Route path="/delete-account" element={<DeleteAccountPage />} />

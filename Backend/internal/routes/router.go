@@ -32,4 +32,25 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 		protected.PUT("/collection/:id", collectionHandler.Update)
 		protected.DELETE("/collection/:id", collectionHandler.Delete)
 	}
+
+	// Admin routes
+	admin := protected.Group("/admin")
+	admin.Use(AdminOnly())
+	{
+		admin.GET("/manage", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "Welcome, admin!"})
+		})
+	}
+}
+
+func AdminOnly() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		role, exists := c.Get("userRole")
+		if !exists || role != "admin" {
+			c.JSON(403, gin.H{"error": "Admin only"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }

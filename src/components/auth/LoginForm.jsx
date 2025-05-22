@@ -17,11 +17,13 @@ const LoginForm = () => {
     setIsSubmitting(true)
     setError('')
     try {
-      const success = await login({ ...data, rememberMe })
-      if (success) {
-        navigate('/home')
-      } else {
-
+      const user = await login({ ...data, rememberMe })
+      if (user) {
+        if (user.role === 'admin') {
+          navigate('/admin/manage')
+        } else {
+          navigate('/home')
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.')

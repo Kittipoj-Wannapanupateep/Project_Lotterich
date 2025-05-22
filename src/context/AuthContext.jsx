@@ -53,15 +53,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials)
-      
       if (response.token) {
         localStorage.setItem('token', response.token)
-        setUser(jwtDecode(response.token))
+        setUser({ ...response.user, role: response.user.role })
         await fetchProfile()
         toast.success('Login successful')
-        return true
+        return response.user
       }
-      
       return false
     } catch (error) {
       toast.error(error.message || 'Login failed')
