@@ -45,6 +45,7 @@ func main() {
 
 	userRepo := repositories.NewUserRepository(db)
 	collectionRepo := repositories.NewCollectionRepository(db)
+	statisticsRepo := repositories.NewStatisticsRepository(db)
 
 	// Create Gin router
 	router := gin.Default()
@@ -62,9 +63,10 @@ func main() {
 	// Create handlers
 	authHandler := handlers.NewAuthHandler(userRepo, collectionRepo)
 	collectionHandler := handlers.NewCollectionHandler(collectionRepo)
+	statisticsHandler := handlers.NewStatisticsHandler(statisticsRepo)
 
 	// Setup routes
-	routes.SetupRoutes(router, authHandler, collectionHandler)
+	routes.SetupRoutes(router, authHandler, collectionHandler, statisticsHandler)
 
 	// Start server
 	port := getEnv("PORT", "8080")

@@ -8,7 +8,7 @@ import (
 )
 
 // SetupRoutes configures all the routes for the application
-func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collectionHandler *handlers.CollectionHandler) {
+func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collectionHandler *handlers.CollectionHandler, statisticsHandler *handlers.StatisticsHandler) {
 	// API group
 	api := router.Group("/api")
 
@@ -40,6 +40,11 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 		admin.GET("/manage", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "Welcome, admin!"})
 		})
+		// Statistics routes
+		admin.GET("/statistics", statisticsHandler.GetAllStatistics)
+		admin.POST("/statistics", statisticsHandler.CreateStatistics)
+		admin.PUT("/statistics/:id", statisticsHandler.UpdateStatistics)
+		admin.DELETE("/statistics/:id", statisticsHandler.DeleteStatistics)
 	}
 }
 
