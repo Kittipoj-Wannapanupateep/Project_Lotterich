@@ -7,35 +7,6 @@ const api = axios.create({
   timeout: 5000
 })
 
-// For development/demonstration purposes only
-const mockUsers = [
-  {
-    id: '1',
-    name: 'Test User',
-    email: 'test@example.com',
-    password: 'password123'
-  }
-]
-
-// Mock data storage for development
-let users = [...mockUsers]
-
-// In a real application, this would be handled by the backend
-const generateToken = (user) => {
-  // This is a simplistic mock JWT generation
-  // In a real app, this would be done by the backend with proper signing
-  const payload = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    // Set expiration to 1 hour from now
-    exp: Math.floor(Date.now() / 1000) + (60 * 60)
-  }
-  
-  const base64Payload = btoa(JSON.stringify(payload))
-  return `mockJWT.${base64Payload}.signature`
-}
-
 // Add response interceptor for better error handling
 api.interceptors.response.use(
   response => response,

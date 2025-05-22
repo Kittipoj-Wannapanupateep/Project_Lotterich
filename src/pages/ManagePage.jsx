@@ -80,7 +80,22 @@ const ManagePage = () => {
   const clearSearch = () => { setSearch(''); setShowClearSearch(false); };
 
   // Modal handlers
-  const handleOpenAddModal = () => { setForm({ date: '', prize1: '', first3: ['', ''], last3: ['', ''], last2: '' }); setErrors({}); setShowAddModal(true); };
+  const handleOpenAddModal = () => {
+    // หา latest date
+    let latestDate = '';
+    if (draws.length > 0) {
+      // sort ตามวันที่มากสุด
+      const sorted = [...draws].sort((a, b) => new Date(b.date) - new Date(a.date));
+      latestDate = sorted[0].date;
+    } else {
+      // ถ้าไม่มีข้อมูล ใช้วันนี้
+      const today = new Date();
+      latestDate = today.toISOString().slice(0, 10);
+    }
+    setForm({ date: latestDate, prize1: '', first3: ['', ''], last3: ['', ''], last2: '' });
+    setErrors({});
+    setShowAddModal(true);
+  };
   const handleOpenEditModal = (draw) => { setEditId(draw.id); setForm({ ...draw }); setErrors({}); setShowEditModal(true); };
   const handleCloseModal = () => { setShowAddModal(false); setShowEditModal(false); setShowDeleteConfirmModal(false); setErrors({}); };
   const handleOpenDeleteConfirm = (id) => { setDeleteId(id); setShowDeleteConfirmModal(true); };
@@ -298,28 +313,28 @@ const ManagePage = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">รางวัลที่ 1</label>
-              <input type="text" className={`form-control${errors.prize1 ? ' is-invalid' : ''}`} name="prize1" value={form.prize1} onChange={handleFormChange} maxLength={6} />
+              <input type="text" className={`form-control${errors.prize1 ? ' is-invalid' : ''}`} name="prize1" value={form.prize1} onChange={handleFormChange} maxLength={6} autoComplete="off" />
               {errors.prize1 && <div className="invalid-feedback" style={{display:'block'}}>{errors.prize1}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สามตัวหน้า</label>
               <div className="d-flex gap-2">
-                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-0" value={form.first3[0]} onChange={handleFormChange} maxLength={3} />
-                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-1" value={form.first3[1]} onChange={handleFormChange} maxLength={3} />
+                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-0" value={form.first3[0]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
+                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-1" value={form.first3[1]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
               </div>
               {errors.first3 && <div className="invalid-feedback" style={{display:'block'}}>{errors.first3}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สามตัวท้าย</label>
               <div className="d-flex gap-2">
-                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-0" value={form.last3[0]} onChange={handleFormChange} maxLength={3} />
-                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-1" value={form.last3[1]} onChange={handleFormChange} maxLength={3} />
+                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-0" value={form.last3[0]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
+                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-1" value={form.last3[1]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
               </div>
               {errors.last3 && <div className="invalid-feedback" style={{display:'block'}}>{errors.last3}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สองตัวท้าย</label>
-              <input type="text" className={`form-control${errors.last2 ? ' is-invalid' : ''}`} name="last2" value={form.last2} onChange={handleFormChange} maxLength={2} />
+              <input type="text" className={`form-control${errors.last2 ? ' is-invalid' : ''}`} name="last2" value={form.last2} onChange={handleFormChange} maxLength={2} autoComplete="off" />
               {errors.last2 && <div className="invalid-feedback" style={{display:'block'}}>{errors.last2}</div>}
             </div>
           </form>
@@ -341,28 +356,28 @@ const ManagePage = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">รางวัลที่ 1</label>
-              <input type="text" className={`form-control${errors.prize1 ? ' is-invalid' : ''}`} name="prize1" value={form.prize1} onChange={handleFormChange} maxLength={6} />
+              <input type="text" className={`form-control${errors.prize1 ? ' is-invalid' : ''}`} name="prize1" value={form.prize1} onChange={handleFormChange} maxLength={6} autoComplete="off" />
               {errors.prize1 && <div className="invalid-feedback" style={{display:'block'}}>{errors.prize1}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สามตัวหน้า</label>
               <div className="d-flex gap-2">
-                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-0" value={form.first3[0]} onChange={handleFormChange} maxLength={3} />
-                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-1" value={form.first3[1]} onChange={handleFormChange} maxLength={3} />
+                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-0" value={form.first3[0]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
+                <input type="text" className={`form-control${errors.first3 ? ' is-invalid' : ''}`} name="first3-1" value={form.first3[1]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
               </div>
               {errors.first3 && <div className="invalid-feedback" style={{display:'block'}}>{errors.first3}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สามตัวท้าย</label>
               <div className="d-flex gap-2">
-                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-0" value={form.last3[0]} onChange={handleFormChange} maxLength={3} />
-                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-1" value={form.last3[1]} onChange={handleFormChange} maxLength={3} />
+                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-0" value={form.last3[0]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
+                <input type="text" className={`form-control${errors.last3 ? ' is-invalid' : ''}`} name="last3-1" value={form.last3[1]} onChange={handleFormChange} maxLength={3} autoComplete="off" />
               </div>
               {errors.last3 && <div className="invalid-feedback" style={{display:'block'}}>{errors.last3}</div>}
             </div>
             <div className="mb-3">
               <label className="form-label">สองตัวท้าย</label>
-              <input type="text" className={`form-control${errors.last2 ? ' is-invalid' : ''}`} name="last2" value={form.last2} onChange={handleFormChange} maxLength={2} />
+              <input type="text" className={`form-control${errors.last2 ? ' is-invalid' : ''}`} name="last2" value={form.last2} onChange={handleFormChange} maxLength={2} autoComplete="off" />
               {errors.last2 && <div className="invalid-feedback" style={{display:'block'}}>{errors.last2}</div>}
             </div>
           </form>
