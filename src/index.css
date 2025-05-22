@@ -9,6 +9,11 @@ a {
   color: inherit;
 }
 
+
+.container-fluid {
+  padding: 0px !important;
+}
+
 /* Fade-in Animation */
 @keyframes fadeInDown {
   from {

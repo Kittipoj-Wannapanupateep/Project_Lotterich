@@ -1,6 +1,8 @@
 /* ---------- Overview Page Container ---------- */
 .overview-page {
     padding-top: 2rem;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* ---------- Stat Boxes ---------- */
