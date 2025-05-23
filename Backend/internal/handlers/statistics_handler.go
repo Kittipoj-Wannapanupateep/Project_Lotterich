@@ -76,3 +76,26 @@ func (h *StatisticsHandler) UpdateStatistics(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Statistics updated successfully"})
 }
+
+func (h *StatisticsHandler) GetLatestStatistics(c *gin.Context) {
+	stats, err := h.repo.GetAll(context.Background())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(stats) == 0 {
+		c.JSON(http.StatusOK, nil)
+		return
+	}
+
+	// Sort by date in descending order and get the latest
+	latestStat := stats[0]
+	for _, stat := range stats {
+		if stat.Date > latestStat.Date {
+			latestStat = stat
+		}
+	}
+
+	c.JSON(http.StatusOK, latestStat)
+}

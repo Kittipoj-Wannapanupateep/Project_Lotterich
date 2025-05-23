@@ -46,11 +46,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Email:        input.Email,
 		PasswordHash: string(hashedPassword),
 	}
-	if user.Email == "admin@gmail.com" {
-		user.Role = "admin"
-	} else {
-		user.Role = "user"
-	}
+	user.Role = "user"
 
 	createdUser, err := h.userRepo.Create(user)
 	if err != nil {

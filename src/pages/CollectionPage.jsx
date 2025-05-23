@@ -16,7 +16,7 @@ const CollectionPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showClearSearch, setShowClearSearch] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(3);
     
     // State for add modal
     const [showAddModal, setShowAddModal] = useState(false);

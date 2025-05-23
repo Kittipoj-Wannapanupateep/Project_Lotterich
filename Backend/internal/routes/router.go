@@ -31,6 +31,9 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 		protected.POST("/collection", collectionHandler.Create)
 		protected.PUT("/collection/:id", collectionHandler.Update)
 		protected.DELETE("/collection/:id", collectionHandler.Delete)
+
+		// Statistics routes for regular users
+		protected.GET("/statistics/latest", statisticsHandler.GetLatestStatistics)
 	}
 
 	// Admin routes

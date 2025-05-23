@@ -9,6 +9,18 @@ const getAuthHeader = () => {
     return { Authorization: `Bearer ${token}` }
 }
 
+export const getLatestStatistics = async () => {
+    try {
+        const res = await axios.get(`${API_URL}/statistics/latest`, {
+            headers: getAuthHeader()
+        })
+        return res.data
+    } catch (error) {
+        console.error('Error fetching latest statistics:', error)
+        throw error
+    }
+}
+
 export const getAllStatistics = async () => {
     try {
         const res = await axios.get(`${API_URL}/admin/statistics`, {
