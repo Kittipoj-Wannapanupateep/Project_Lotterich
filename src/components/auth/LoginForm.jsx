@@ -95,6 +95,7 @@ const LoginForm = () => {
           </label>
           <span className="remember-text">Remember me</span>
         </div>
+        <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
       </div>
       <button type="submit" className="login-button" disabled={isSubmitting}>
         {isSubmitting ? 'Logging in...' : 'LOGIN'}

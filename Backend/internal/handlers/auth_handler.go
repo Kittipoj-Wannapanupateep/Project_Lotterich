@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -15,13 +17,15 @@ import (
 type AuthHandler struct {
 	userRepo       *repositories.UserRepository
 	collectionRepo *repositories.CollectionRepository
+	otpRepo        *repositories.OTPRepository
 }
 
 // NewAuthHandler creates a new AuthHandler
-func NewAuthHandler(userRepo *repositories.UserRepository, collectionRepo *repositories.CollectionRepository) *AuthHandler {
+func NewAuthHandler(userRepo *repositories.UserRepository, collectionRepo *repositories.CollectionRepository, otpRepo *repositories.OTPRepository) *AuthHandler {
 	return &AuthHandler{
 		userRepo:       userRepo,
 		collectionRepo: collectionRepo,
+		otpRepo:        otpRepo,
 	}
 }
 
@@ -231,4 +235,106 @@ func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Account deleted successfully"})
+}
+
+// POST /auth/forgot-password
+func (h *AuthHandler) ForgotPassword(c *gin.Context) {
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Printf("Invalid request: %v\n", err)
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+	fmt.Printf("Processing forgot password request for email: %s\n", req.Email)
+
+	user, err := h.userRepo.FindByEmail(req.Email)
+	if err != nil {
+		fmt.Printf("Email not found: %v\n", err)
+		c.JSON(404, gin.H{"error": "Email not found"})
+		return
+	}
+	fmt.Printf("User found: %s\n", user.Email)
+
+	otp := utils.GenerateOTP(6)
+	fmt.Printf("Generated OTP: %s\n", otp)
+
+	if err := h.otpRepo.CreateOrUpdate(req.Email, otp); err != nil {
+		fmt.Printf("Failed to create/update OTP: %v\n", err)
+		c.JSON(500, gin.H{"error": "Failed to create OTP"})
+		return
+	}
+
+	subject := "Lotterich - รหัส OTP สำหรับรีเซ็ตรหัสผ่าน"
+	body := "รหัส OTP สำหรับรีเซ็ตรหัสผ่านของคุณคือ: " + otp + "\nรหัสนี้จะหมดอายุใน 3 นาที"
+	if err := utils.SendEmail(req.Email, subject, body); err != nil {
+		fmt.Printf("Failed to send email: %v\n", err)
+		c.JSON(500, gin.H{"error": "Failed to send OTP email"})
+		return
+	}
+
+	fmt.Printf("OTP sent successfully to %s\n", req.Email)
+	c.JSON(200, gin.H{"message": "OTP sent"})
+}
+
+// POST /auth/verify-otp
+func (h *AuthHandler) VerifyOTP(c *gin.Context) {
+	var req struct {
+		Email string `json:"email"`
+		OTP   string `json:"otp"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+	otp, err := h.otpRepo.FindByEmail(req.Email)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		return
+	}
+	if otp.NumberOTP != req.OTP {
+		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		return
+	}
+	if time.Since(otp.DateOTP) > 3*time.Minute {
+		// ลบ OTP ที่หมดอายุ
+		h.otpRepo.DeleteByEmail(req.Email)
+		c.JSON(400, gin.H{"error": "OTP expired"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "OTP valid"})
+}
+
+// POST /auth/reset-password
+func (h *AuthHandler) ResetPassword(c *gin.Context) {
+	var req struct {
+		Email       string `json:"email"`
+		OTP         string `json:"otp"`
+		NewPassword string `json:"newPassword"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+	otp, err := h.otpRepo.FindByEmail(req.Email)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		return
+	}
+	if otp.NumberOTP != req.OTP {
+		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		return
+	}
+	if time.Since(otp.DateOTP) > 3*time.Minute {
+		// ลบ OTP ที่หมดอายุ
+		h.otpRepo.DeleteByEmail(req.Email)
+		c.JSON(400, gin.H{"error": "OTP expired"})
+		return
+	}
+	hash, _ := utils.HashPassword(req.NewPassword)
+	user, _ := h.userRepo.FindByEmail(req.Email)
+	h.userRepo.UpdatePassword(user.ID.Hex(), hash)
+	h.otpRepo.DeleteByEmail(req.Email)
+	c.JSON(200, gin.H{"message": "Password reset successful"})
 }

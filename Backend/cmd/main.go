@@ -46,6 +46,7 @@ func main() {
 	userRepo := repositories.NewUserRepository(db)
 	collectionRepo := repositories.NewCollectionRepository(db)
 	statisticsRepo := repositories.NewStatisticsRepository(db)
+	otpRepo := repositories.NewOTPRepository(db)
 
 	// Create Gin router
 	router := gin.Default()
@@ -61,7 +62,7 @@ func main() {
 	}))
 
 	// Create handlers
-	authHandler := handlers.NewAuthHandler(userRepo, collectionRepo)
+	authHandler := handlers.NewAuthHandler(userRepo, collectionRepo, otpRepo)
 	collectionHandler := handlers.NewCollectionHandler(collectionRepo)
 	statisticsHandler := handlers.NewStatisticsHandler(statisticsRepo)
 

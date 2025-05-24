@@ -15,6 +15,9 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 	// Public routes
 	api.POST("/auth/register", authHandler.Register)
 	api.POST("/auth/login", authHandler.Login)
+	api.POST("/auth/forgot-password", authHandler.ForgotPassword)
+	api.POST("/auth/verify-otp", authHandler.VerifyOTP)
+	api.POST("/auth/reset-password", authHandler.ResetPassword)
 	api.GET("/statistics/all", statisticsHandler.GetAllStatisticsPublic)
 
 	// Protected routes

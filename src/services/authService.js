@@ -121,11 +121,56 @@ api.interceptors.request.use(
   }
 )
 
+const requestPasswordReset = async (email) => {
+  try {
+    console.log('Requesting password reset for email:', email)
+    const response = await api.post('/auth/forgot-password', { email })
+    console.log('Password reset response:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Password reset request error:', error)
+    console.error('Error response:', error.response?.data)
+    if (error.response) {
+      throw new Error(error.response.data.error || 'Failed to request password reset.')
+    }
+    throw error
+  }
+}
+
+const verifyOtp = async (email, otp) => {
+  try {
+    const response = await api.post('/auth/verify-otp', { email, otp })
+    return response.data
+  } catch (error) {
+    console.error('OTP verify error:', error)
+    if (error.response) {
+      throw new Error(error.response.data.error || 'Failed to verify OTP.')
+    }
+    throw error
+  }
+}
+
+const resetPassword = async (email, otp, newPassword) => {
+  try {
+    const response = await api.post('/auth/reset-password', { email, otp, newPassword })
+    return response.data
+  } catch (error) {
+    console.error('Password reset error:', error)
+    if (error.response) {
+      throw new Error(error.response.data.error || 'Failed to reset password.')
+    }
+    throw error
+  }
+}
+
 export default {
   login,
   register,
   getProfile,
   updateProfile,
   changePassword,
-  deleteAccount
+  deleteAccount,
+  requestPasswordReset,
+  verifyOtp,
+  resetPassword
 }

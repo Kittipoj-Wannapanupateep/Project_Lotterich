@@ -17,6 +17,8 @@ import CollectionPage from './pages/CollectionPage'
 import OverviewPage from './pages/OverviewPage'
 import StatisticsPage from './pages/StatisticsPage'
 import ManagePage from './pages/ManagePage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/statistics" element={<StatisticsPage/>} />
             <Route element={<ProtectedRoute role="admin" />}>
               <Route path="/admin/manage" element={<ManagePage />} />
@@ -42,6 +45,7 @@ function App() {
               <Route path="/change-password" element={<ChangePasswordPage />} />
               <Route path="/delete-account" element={<DeleteAccountPage />} />
             </Route>
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
