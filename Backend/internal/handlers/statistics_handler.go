@@ -99,3 +99,12 @@ func (h *StatisticsHandler) GetLatestStatistics(c *gin.Context) {
 
 	c.JSON(http.StatusOK, latestStat)
 }
+
+func (h *StatisticsHandler) GetAllStatisticsPublic(c *gin.Context) {
+	stats, err := h.repo.GetAll(context.Background())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, stats)
+}

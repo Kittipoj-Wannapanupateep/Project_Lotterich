@@ -15,6 +15,7 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 	// Public routes
 	api.POST("/auth/register", authHandler.Register)
 	api.POST("/auth/login", authHandler.Login)
+	api.GET("/statistics/all", statisticsHandler.GetAllStatisticsPublic)
 
 	// Protected routes
 	protected := api.Group("")

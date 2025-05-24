@@ -23,9 +23,7 @@ export const getLatestStatistics = async () => {
 
 export const getAllStatistics = async () => {
     try {
-        const res = await axios.get(`${API_URL}/admin/statistics`, {
-            headers: getAuthHeader()
-        })
+        const res = await axios.get(`${API_URL}/statistics/all`)
         return res.data
     } catch (error) {
         console.error('Error fetching statistics:', error)

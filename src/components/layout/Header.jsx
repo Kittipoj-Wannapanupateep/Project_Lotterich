@@ -27,6 +27,11 @@ const Header = () => {
     setExpanded(false);
   }
 
+  // Avatar image by role
+  const avatarUrl = user && user.role === 'admin'
+    ? 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
+    : 'https://cdn-icons-png.flaticon.com/512/15315/15315520.png';
+
   return (
     <>
       <Navbar expand="lg" className="navbar" expanded={expanded} onToggle={setExpanded}>
@@ -42,7 +47,7 @@ const Header = () => {
                 <Link to="/profile" className="user-profile-link" onClick={handleNavClick}>
                   <div className="user-profile-container w-100 justify-content-center">
                     <div className="user-avatar">
-                      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="User Avatar" />
+                      <img src={avatarUrl} alt="User Avatar" />
                     </div>
                     <div className="user-info">
                       <span className="username">{user.name || user.email}</span>
@@ -82,7 +87,7 @@ const Header = () => {
               <Link to="/profile" className="user-profile-link ms-auto d-none d-lg-inline-block" onClick={handleNavClick}>
                 <div className="user-profile-container">
                   <div className="user-avatar">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="User Avatar" />
+                    <img src={avatarUrl} alt="User Avatar" />
                   </div>
                   <div className="user-info">
                     <span className="username">{user.name || user.email}</span>

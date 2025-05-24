@@ -27,6 +27,11 @@ const ProfilePage = () => {
   // ดึงวันที่สร้างบัญชีจาก user.createdAt
   const memberSince = user?.createdAt ? formatDate(user.createdAt) : ''
 
+  // Avatar image by role
+  const avatarUrl = user && user.role === 'admin'
+    ? 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
+    : 'https://cdn-icons-png.flaticon.com/512/15315/15315520.png';
+
   useEffect(() => {
     if (user) {
       setUsername(user.name || '')
@@ -104,7 +109,7 @@ const ProfilePage = () => {
         <div className="profile-card">
           <div className="profile-form">
             <div className="profile-image-container">
-              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Profile Image" className="profile-image" />
+              <img src={avatarUrl} alt="Profile Image" className="profile-image" />
             </div>
             <h2>Profile</h2>
             <form onSubmit={e => e.preventDefault()}>

@@ -341,7 +341,7 @@ const OverviewPage = () => {
                     </div>
                     <div className="col-md-2 col-6 mb-3">
                         <div className="stat-box shadow-sm rounded text-center">
-                            <h6 className="stat-title">เลขล่าสุดที่ถูกรางวัล</h6>
+                            <h6 className="stat-title">เลขที่ซื้อล่าสุดที่ถูกรางวัล</h6>
                             <p className="stat-value">{stats.lastWinningNumber}</p>
                         </div>
                     </div>
