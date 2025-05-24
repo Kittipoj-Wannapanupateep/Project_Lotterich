@@ -643,8 +643,12 @@
 
 @media (max-width: 768px) {
     .modal-dialog {
-        margin: 0 15px;
-        min-height: calc(100vh - 30px);
+        margin: 0 auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 95vw !important;
     }
 
     .modal-content {
@@ -688,7 +692,12 @@
 
 @media (max-width: 576px) {
     .modal-dialog {
-        margin: 0 10px;
+        margin: 0 auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 98vw !important;
     }
 
     .modal-content {

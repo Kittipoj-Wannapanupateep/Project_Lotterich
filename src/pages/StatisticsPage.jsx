@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import '../styles/StatisticsPage.css';
 import { getAllStatistics } from '../services/statisticsService';
+import Select from 'react-select';
 
 const StatisticsPage = () => {
   const chartRef = useRef(null);
@@ -293,6 +294,13 @@ const StatisticsPage = () => {
     setCheckCount(found.length);
   };
 
+  // Create options for react-select
+  const dateOptions = statistics.map(stat => ({
+    value: stat.date,
+    label: `งวดวันที่ ${stat.date}`
+  }));
+  const selectedOption = dateOptions.find(opt => opt.value === selectedDate);
+
   if (loading) {
     return <div className="d-flex justify-content-center p-5">Loading...</div>;
   }
@@ -311,18 +319,59 @@ const StatisticsPage = () => {
                 <div className="section-header">
                   <h2 className="section-title visible">สรุปผลรางวัลในแต่ละงวด</h2>
                   <div className="draw-selector">
-                    <select 
-                      className="form-select" 
-                      id="drawDate" 
-                      value={selectedDate} 
-                      onChange={e => setSelectedDate(e.target.value)}
-                    >
-                      {statistics.map(stat => (
-                        <option key={stat.date} value={stat.date}>
-                          งวดวันที่ {stat.date}
-                        </option>
-                      ))}
-                    </select>
+                    <Select
+                      options={dateOptions}
+                      value={selectedOption}
+                      onChange={opt => setSelectedDate(opt.value)}
+                      maxMenuHeight={300}
+                      styles={{
+                        control: (base, state) => ({
+                          ...base,
+                          backgroundColor: '#2a2a2a',
+                          borderColor: state.isFocused ? '#FFD700' : '#FFD700',
+                          color: '#FFD700',
+                          fontWeight: 'bold',
+                          fontSize: '1.1rem',
+                          borderRadius: '8px',
+                          minHeight: '48px',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#ffed8a'
+                          }
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: '#2a2a2a',
+                          color: '#FFD700',
+                          border: '1px solid #FFD700',
+                          borderRadius: '8px',
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isFocused ? '#FFD700' : '#2a2a2a',
+                          color: state.isFocused ? '#2a2a2a' : '#FFD700',
+                          fontWeight: state.isSelected ? 'bold' : 'normal',
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: '#FFD700',
+                          fontWeight: 'bold',
+                        }),
+                        dropdownIndicator: (base, state) => ({
+                          ...base,
+                          color: '#FFD700',
+                          '&:hover': { color: '#FFD700' }
+                        }),
+                        indicatorSeparator: (base) => ({
+                          ...base,
+                          backgroundColor: '#FFD700',
+                        }),
+                      }}
+                      menuPlacement='auto'
+                      isSearchable={false}
+                      inputId="drawDate"
+                      instanceId="drawDate"
+                    />
                   </div>
                 </div>
                 {selectedStat ? (
@@ -412,7 +461,7 @@ const StatisticsPage = () => {
                     )}
                   </div>
                   <button 
-                    className="btn btn-primary w-100 mt-3"
+                    className="btn-primary w-100 mt-3"
                     onClick={handleCheckNumber}
                   >
                     ตรวจสอบ

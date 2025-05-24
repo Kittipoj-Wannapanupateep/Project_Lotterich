@@ -37,22 +37,16 @@
     font-size: 1.1rem;
     position: relative;
     z-index: 2;
+    box-shadow: none;
+    outline: none;
+    background-image: none;
 }
 
-.draw-selector::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 18px;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 8px solid #FFD700;
-    transform: translateY(-50%);
-    z-index: 3;
+/* Hide default arrow for IE10+ */
+.draw-selector .form-select::-ms-expand {
+    display: none;
 }
+
 
 .prize-container {
     display: flex;
@@ -115,7 +109,7 @@
 /* Section 2: Top 5 Numbers */
 .statistics-section-2 {
     padding: 4rem 0;
-    background: #242424;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .top-numbers {

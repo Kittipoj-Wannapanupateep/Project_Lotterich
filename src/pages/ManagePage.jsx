@@ -400,7 +400,7 @@ const ManagePage = () => {
         </Modal.Footer>
       </Modal>
       {/* Success Modal */}
-      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} centered>
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} centered dialogClassName="success-modal">
         <Modal.Body className="text-center p-4">
           <FaCheckCircle className="text-success mb-3" style={{ fontSize: '3rem' }} />
           <h5 className="modal-title mb-3">
