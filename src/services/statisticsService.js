@@ -36,6 +36,12 @@ export const addStatistics = async (data) => {
         const res = await axios.post(`${API_URL}/admin/statistics`, data, {
             headers: getAuthHeader()
         })
+        
+        // Check if notification was sent successfully
+        if (res.data.notificationError) {
+            console.warn('Statistics added but notification failed:', res.data.notificationError)
+        }
+        
         return res.data
     } catch (error) {
         console.error('Error adding statistics:', error)

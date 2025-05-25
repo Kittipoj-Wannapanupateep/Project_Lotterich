@@ -26,6 +26,20 @@ func main() {
 		log.Println("Warning: No .env file found")
 	}
 
+	// Check required environment variables
+	requiredEnvVars := []string{
+		"MONGO_URI",
+		"DB_NAME",
+		"TELEGRAM_BOT_TOKEN",
+		"TELEGRAM_CHAT_ID",
+	}
+
+	for _, envVar := range requiredEnvVars {
+		if os.Getenv(envVar) == "" {
+			log.Printf("Warning: %s environment variable is not set", envVar)
+		}
+	}
+
 	// Initialize MongoDB connection
 	mongoURI := getEnv("MONGO_URI", "mongodb://localhost:27017")
 	dbName := getEnv("DB_NAME", "Lotterich")

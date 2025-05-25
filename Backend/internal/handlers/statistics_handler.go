@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/user/Lotterich/internal/models"
 	"github.com/user/Lotterich/internal/repositories"
+	"github.com/user/Lotterich/internal/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -29,6 +31,38 @@ func (h *StatisticsHandler) CreateStatistics(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Format date to Thai format
+	date, err := time.Parse("2006-01-02", stat.Date)
+	if err != nil {
+		fmt.Printf("Error parsing date: %v\n", err)
+		date = time.Now() // Fallback to current date if parsing fails
+	}
+
+	thaiMonths := []string{
+		"มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+		"กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
+	}
+
+	thaiDate := fmt.Sprintf("%d %s %d", date.Day(), thaiMonths[date.Month()-1], date.Year()+543)
+
+	// Send Telegram notification
+	message := fmt.Sprintf("🔔 <b>งวดใหม่ถูกเพิ่มแล้ว!</b>\n\n"+
+		"📅 งวดวันที่ : %s\n"+
+		"🏆 รางวัลที่ 1 : %s\n"+
+		"🎯 สามตัวหน้า : %s , %s\n"+
+		"🎯 สามตัวท้าย : %s , %s\n"+
+		"🎯 สองตัวท้าย : %s",
+		thaiDate, stat.Prize1,
+		stat.First3One, stat.First3Two,
+		stat.Last3One, stat.Last3Two,
+		stat.Last2)
+
+	if err := utils.SendTelegramNotification(message); err != nil {
+		// Log error but don't fail the request
+		fmt.Printf("Failed to send Telegram notification: %v\n", err)
+	}
+
 	c.JSON(http.StatusOK, stat)
 }
 
