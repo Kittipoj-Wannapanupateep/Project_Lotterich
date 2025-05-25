@@ -34,6 +34,13 @@ const ManagePage = () => {
     fetchStatistics();
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+  
   const fetchStatistics = async () => {
     try {
       const data = await getAllStatistics();
@@ -66,7 +73,17 @@ const ManagePage = () => {
 
   // Filtered and paginated draws
   const filteredDraws = draws
-    .filter(draw => formatDate(draw.date).includes(search))
+    .filter(draw => {
+      const formattedDate = formatDate(draw.date);
+      if (!search) return true;
+      
+      // Extract day number from formatted date (e.g., "1 ม.ค. 2567" -> "1")
+      const dayMatch = formattedDate.match(/^(\d+)/);
+      if (!dayMatch) return false;
+      
+      const dayNumber = dayMatch[1];
+      return dayNumber === search;
+    })
     .sort((a, b) => new Date(b.date) - new Date(a.date));
   const totalPages = Math.ceil(filteredDraws.length / itemsPerPage);
   const currentItems = filteredDraws.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -210,24 +227,24 @@ const ManagePage = () => {
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(
-          <button key={i} className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(i)}>{i}</button>
+          <button key={i} className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => {setCurrentPage(i); scrollToTop()}}>{i}</button>
         );
       }
     } else {
       pages.push(
-        <button key={1} className={`btn ${currentPage === 1 ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(1)}>1</button>
+        <button key={1} className={`btn ${currentPage === 1 ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => {setCurrentPage(1); scrollToTop()}}>1</button>
       );
       if (currentPage >= 4) pages.push(<span key="start-ellipsis" className="pagination-ellipsis">...</span>);
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
       for (let i = start; i <= end; i++) {
         pages.push(
-          <button key={i} className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(i)}>{i}</button>
+          <button key={i} className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => {setCurrentPage(i); scrollToTop()}}>{i}</button>
         );
       }
       if (currentPage <= totalPages - 3) pages.push(<span key="end-ellipsis" className="pagination-ellipsis">...</span>);
       pages.push(
-        <button key={totalPages} className={`btn ${currentPage === totalPages ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(totalPages)}>{totalPages}</button>
+        <button key={totalPages} className={`btn ${currentPage === totalPages ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => {setCurrentPage(totalPages); scrollToTop()}}>{totalPages}</button>
       );
     }
     return pages;
@@ -264,7 +281,7 @@ const ManagePage = () => {
         {draws.length > 0 && filteredDraws.length === 0 && (
           <div className="no-results">
             <div className="no-results-icon"><FaTicketAlt /></div>
-            <h3>ไม่พบนัดที่ต้องการ</h3>
+            <h3>ไม่พบงวดที่ต้องการ</h3>
             <p>ลองค้นหางวดอื่น หรือเพิ่มงวดใหม่</p>
           </div>
         )}
@@ -340,7 +357,7 @@ const ManagePage = () => {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleAdd}>ยืนยัน</Button>
+          <Button variant="primary" onClick={() => {handleAdd(); scrollToTop()}}>ยืนยัน</Button>
           <Button variant="secondary" onClick={handleCloseModal}>ยกเลิก</Button>
         </Modal.Footer>
       </Modal>
@@ -395,7 +412,8 @@ const ManagePage = () => {
           <p className="mb-0">คุณแน่ใจหรือไม่ที่จะลบข้อมูลงวดนี้?</p>
         </Modal.Body>
         <Modal.Footer className="justify-content-center border-0">
-          <Button variant="danger" onClick={handleDelete}>ยืนยัน</Button>
+          <Button variant="danger" onClick={() => {handleDelete(); scrollToTop()}}>ยืนยัน</Button>
+          
           <Button variant="secondary" onClick={handleCloseModal}>ยกเลิก</Button>
         </Modal.Footer>
       </Modal>
