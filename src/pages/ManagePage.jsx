@@ -12,7 +12,7 @@ const formatDate = (dateString) => {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear() + 543}`;
 };
 
-const itemsPerPage = 5;
+const itemsPerPage = 4;
 
 const ManagePage = () => {
   const [draws, setDraws] = useState([]);
@@ -217,7 +217,7 @@ const ManagePage = () => {
       pages.push(
         <button key={1} className={`btn ${currentPage === 1 ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(1)}>1</button>
       );
-      if (currentPage > 4) pages.push(<span key="start-ellipsis" className="pagination-ellipsis">...</span>);
+      if (currentPage >= 4) pages.push(<span key="start-ellipsis" className="pagination-ellipsis">...</span>);
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
       for (let i = start; i <= end; i++) {
@@ -225,7 +225,7 @@ const ManagePage = () => {
           <button key={i} className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(i)}>{i}</button>
         );
       }
-      if (currentPage < totalPages - 3) pages.push(<span key="end-ellipsis" className="pagination-ellipsis">...</span>);
+      if (currentPage <= totalPages - 3) pages.push(<span key="end-ellipsis" className="pagination-ellipsis">...</span>);
       pages.push(
         <button key={totalPages} className={`btn ${currentPage === totalPages ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentPage(totalPages)}>{totalPages}</button>
       );
