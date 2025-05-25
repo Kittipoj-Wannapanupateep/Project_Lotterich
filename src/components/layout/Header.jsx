@@ -10,6 +10,8 @@ const Header = () => {
   const location = useLocation();
   const [expanded, setExpanded] = useState(false);
 
+  console.log('Current pathname:', location.pathname);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -58,27 +60,27 @@ const Header = () => {
             )}
             <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
               {!isAuthenticated && (
-                <Nav.Link as={Link} to="/" onClick={handleNavClick}>Home</Nav.Link>
+                <Nav.Link as={Link} to="/" onClick={handleNavClick} className={location.pathname === '/' ? 'active' : ''}>Home</Nav.Link>
               )}
               {isAuthenticated && user.role === 'admin' ? (
                 <>
-                  <Nav.Link as={Link} to="/admin/manage" onClick={handleNavClick}>Manage</Nav.Link>
-                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick}>Statistics</Nav.Link>
+                  <Nav.Link as={Link} to="/admin/manage" onClick={handleNavClick} className={location.pathname === '/admin/manage' ? 'active' : ''}>Manage</Nav.Link>
+                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick} className={location.pathname === '/statistics' ? 'active' : ''}>Statistics</Nav.Link>
                   <Nav.Link as={Link} to="/" onClick={handleLogout}>Logout</Nav.Link>
                 </>
               ) : isAuthenticated ? (
                 <>
-                  <Nav.Link as={Link} to="/" onClick={handleNavClick}>Home</Nav.Link>
-                  <Nav.Link as={Link} to="/collection" onClick={handleNavClick}>Collection</Nav.Link>
-                  <Nav.Link as={Link} to="/overview" onClick={handleNavClick}>Overview</Nav.Link>
-                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick}>Statistics</Nav.Link>
+                  <Nav.Link as={Link} to="/" onClick={handleNavClick} className={location.pathname === '/home' ? 'active' : ''}>Home</Nav.Link>
+                  <Nav.Link as={Link} to="/collection" onClick={handleNavClick} className={location.pathname === '/collection' ? 'active' : ''}>Collection</Nav.Link>
+                  <Nav.Link as={Link} to="/overview" onClick={handleNavClick} className={location.pathname === '/overview' ? 'active' : ''}>Overview</Nav.Link>
+                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick} className={location.pathname === '/statistics' ? 'active' : ''}>Statistics</Nav.Link>
                   <Nav.Link as={Link} to="/" onClick={handleLogout}>Logout</Nav.Link>
                 </>
               ) : (
                 <>
                   <Nav.Link as={Link} to="/login" onClick={handleNavClick}>Collection</Nav.Link>
                   <Nav.Link as={Link} to="/login" onClick={handleNavClick}>Overview</Nav.Link>
-                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick}>Statistics</Nav.Link>
+                  <Nav.Link as={Link} to="/statistics" onClick={handleNavClick} className={location.pathname === '/statistics' ? 'active' : ''}>Statistics</Nav.Link>
                 </>
               )}
             </Nav>
@@ -98,13 +100,13 @@ const Header = () => {
             {!isAuthenticated && (
               <div className="d-flex gap-2 ms-auto">
                 {location.pathname === '/login' ? (
-                  <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>Create Account</Link>
+                  <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>สร้างบัญชี</Link>
                 ) : location.pathname === '/register' ? (
-                  <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>Login</Link>
+                  <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>เข้าสู่ระบบ</Link>
                 ) : (
                   <>
-                    <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>Create Account</Link>
-                    <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>Login</Link>
+                    <Link to="/register" className="btn btn-minimize" onClick={handleNavClick}>สร้างบัญชี</Link>
+                    <Link to="/login" className="btn btn-close-app" onClick={handleNavClick}>เข้าสู่ระบบ</Link>
                   </>
                 )}
               </div>

@@ -45,7 +45,7 @@ func SetupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, collecti
 	admin.Use(AdminOnly())
 	{
 		admin.GET("/manage", func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "Welcome, admin!"})
+			c.JSON(200, gin.H{"message": "ยินดีต้อนรับ Admin!"})
 		})
 		// Statistics routes
 		admin.GET("/statistics", statisticsHandler.GetAllStatistics)
@@ -59,7 +59,7 @@ func AdminOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, exists := c.Get("userRole")
 		if !exists || role != "admin" {
-			c.JSON(403, gin.H{"error": "Admin only"})
+			c.JSON(403, gin.H{"error": "สำหรับ Admin เท่านั้น"})
 			c.Abort()
 			return
 		}

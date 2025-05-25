@@ -35,7 +35,6 @@
 }
 .manage-search-input:focus {
   border-color: #FFD700;
-  background-color: #333;
   outline: none;
 }
 
@@ -304,11 +303,7 @@
   color: #fff;
   transition: all 0.3s;
 }
-.manage-search-input:focus {
-  border-color: #FFD700;
-  background-color: #333;
-  outline: none;
-}
+
 .form-control.is-invalid {
   border-color: #ff6b6b;
 }

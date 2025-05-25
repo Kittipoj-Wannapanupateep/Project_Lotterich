@@ -66,7 +66,7 @@ const ForgotPasswordPage = () => {
 
   const handleSendOtp = async () => {
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      toast.error('Please enter a valid email')
+      toast.error('กรุณากรอกอีเมลของคุณ')
       return
     }
     setError('')
@@ -74,7 +74,7 @@ const ForgotPasswordPage = () => {
     try {
       await authService.requestPasswordReset(email)
       setOtpSent(true)
-      toast.success('OTP has been sent to your email')
+      toast.success('รหัส OTP ได้ถูกส่งไปยังอีเมลเรียบร้อยแล้ว')
     } catch (err) {
       toast.error(err.message || 'Failed to send OTP. Please try again.')
     } finally {
@@ -87,10 +87,10 @@ const ForgotPasswordPage = () => {
     setError('')
     try {
       await authService.verifyOtp(email, otp)
-      toast.success('OTP verified! Please set your new password.')
+      toast.success('ยืนยันรหัส OTP เรียบร้อย! กรุณากรอกรหัสผ่านใหม่ของคุณ')
       navigate('/reset-password', { state: { email, otp } })
     } catch (err) {
-      toast.error(err.message || 'OTP ไม่ถูกต้อง')
+      toast.error(err.message || 'รหัส OTP ไม่ถูกต้อง')
       setError('')
     } finally {
       setIsSubmitting(false)
@@ -102,22 +102,22 @@ const ForgotPasswordPage = () => {
       <div className="forgot-card">
         <div className="forgot-form">
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
-            <h2 className="forgot-title">Forgot Password</h2>
+            <h2 className="forgot-title">ลืมรหัสผ่าน</h2>
             {!otpSent && (
               <div className="form-group">
-                <label className="form-label">Email</label>
+                <label className="form-label">อีเมล</label>
                 <div className="forgot-email-otp-row">
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="กรุณากรอกอีเมลของคุณ"
                       autoComplete="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       style={{ flex: 1 }}
                     />
                     <button type="button" className="forgot-button" style={{ width: 'auto', padding: '0 1.2rem' }} onClick={handleSendOtp} disabled={isSubmitting}>
-                      Send OTP
+                      ส่งรหัส OTP
                     </button>
                   </div>
                 </div>
@@ -134,10 +134,10 @@ const ForgotPasswordPage = () => {
               className="forgot-button"
               disabled={isSubmitting || !otpSent || otp.length !== 6}
             >
-              {isSubmitting ? 'Processing...' : 'Verify OTP'}
+              {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยันรหัส OTP'}
             </button>
             <div className="text-center mt-3">
-              <a href="/login" className="forgot-link">Back to Login</a>
+              <a href="/login" className="forgot-link">กลับไปยังหน้าเข้าสู่ระบบ</a>
             </div>
           </form>
         </div>

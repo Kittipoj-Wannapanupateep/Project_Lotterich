@@ -18,7 +18,7 @@ const DeleteAccountPage = () => {
     setPasswordError('')
     if (!confirmText || !currentPassword) {
       if (!currentPassword) setPasswordError('กรุณากรอกรหัสผ่าน')
-      if (!confirmText) toast.error('Please fill in all fields')
+      if (!confirmText) toast.error('กรุณากรอกข้อมูลทั้งหมด')
       return
     }
     if (currentPassword.length < 6) {
@@ -26,7 +26,7 @@ const DeleteAccountPage = () => {
       return
     }
     if (confirmText !== 'CONFIRM') {
-      toast.error('Please type "CONFIRM" exactly as shown to proceed')
+      toast.error('โปรดพิมพ์คำว่า "CONFIRM" ให้ถูกต้อง')
       return
     }
     try {
@@ -38,8 +38,8 @@ const DeleteAccountPage = () => {
         navigate('/')
       }
     } catch (error) {
-      console.error('Delete account error:', error)
-      toast.error(error.message || 'Failed to delete account')
+      console.error('ลบบัญชีผู้ใช้ผิดพลาด:', error)
+      toast.error(error.message || 'ไม่สามารถลบบัญชีผู้ใช้ได้')
     } finally {
       setLoading(false)
     }
@@ -61,23 +61,23 @@ const DeleteAccountPage = () => {
             <div className="delete-image-container">
               <img src="https://cdn-icons-png.flaticon.com/512/16312/16312186.png" alt="Delete Account" className="delete-image" />
             </div>
-            <h2>Delete Account</h2>
-            <p className="warning-text">Warning: This action cannot be undone. All your data will be permanently deleted.</p>
+            <h2>ลบบัญชีผู้ใช้</h2>
+            <p className="warning-text">คำเตือน : การดำเนินการนี้ไม่สามารถย้อนกลับได้ ข้อมูลทั้งหมด<br /> ของคุณจะถูกลบออกอย่างถาวร</p>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="form-group">
-                <label className="form-label">Type "CONFIRM" to proceed</label>
+                <label className="form-label">พิมพ์คำว่า "CONFIRM" เพื่อดำเนินการต่อ</label>
                 <div className="input-with-icon">
                   <input
                     type="text"
                     value={confirmText}
                     onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder="Type CONFIRM"
+                    placeholder="พิมพ์คำว่า CONFIRM"
                     disabled={loading}
                   />
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Current Password</label>
+                <label className="form-label">รหัสผ่านปัจจุบัน</label>
                 <div className="input-with-icon">
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -86,7 +86,7 @@ const DeleteAccountPage = () => {
                       setCurrentPassword(e.target.value)
                       if (e.target.value.length >= 6) setPasswordError('')
                     }}
-                    placeholder="Enter your current password"
+                    placeholder="พิมพ์รหัสผ่านปัจจุบัน"
                     disabled={loading}
                   />
                   <button
@@ -113,7 +113,7 @@ const DeleteAccountPage = () => {
                   onClick={handleDeleteAccount}
                   disabled={loading}
                 >
-                  {loading ? 'Deleting...' : 'Delete Account'}
+                  {loading ? 'กำลังทำการลบบัญชี...' : 'ลบบัญชีผู้ใช้'}
                 </button>
                 <button
                   type="button"
@@ -121,7 +121,7 @@ const DeleteAccountPage = () => {
                   onClick={handleCancel}
                   disabled={loading}
                 >
-                  Cancel
+                  ยกเลิก
                 </button>
               </div>
             </form>

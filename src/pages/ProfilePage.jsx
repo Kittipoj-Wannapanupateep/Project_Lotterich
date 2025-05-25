@@ -7,11 +7,12 @@ import { toast } from 'react-toastify'
 
 function formatDate(dateString) {
   if (!dateString) return ''
+  const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
   const date = new Date(dateString)
-  // ตัวอย่าง: 1 January 2024
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  })
+  const day = date.getDate()
+  const month = months[date.getMonth()]
+  const year = date.getFullYear() + 543
+  return `${day} ${month} ${year}`
 }
 
 const ProfilePage = () => {
@@ -111,10 +112,10 @@ const ProfilePage = () => {
             <div className="profile-image-container">
               <img src={avatarUrl} alt="Profile Image" className="profile-image" />
             </div>
-            <h2>Profile</h2>
+            <h2>บัญชีผู้ใช้</h2>
             <form onSubmit={e => e.preventDefault()}>
               <div className="form-group">
-                <label className="form-label">Username</label>
+                <label className="form-label">ชื่อผู้ใช้</label>
                 <div className="input-with-icon">
                   <input
                     type="text"
@@ -143,19 +144,19 @@ const ProfilePage = () => {
                 {usernameError && <div className="error-message" style={{ color: 'red', fontSize: '0.875rem', marginTop: '0.25rem' }}>{usernameError}</div>}
               </div>
               <div className="form-group">
-                <label className="form-label">Email</label>
+                <label className="form-label">อีเมล</label>
                 <input type="text" value={email} readOnly />
               </div>
               <div className="form-group">
-                <label className="form-label">Member Since</label>
+                <label className="form-label">สร้างบัญชีเมื่อ</label>
                 <input type="text" value={memberSince} readOnly />
               </div>
               <div className="profile-actions">
                 <button type="button" className="change-password-button" onClick={handleChangePassword} disabled={loading}>
-                  Change Password
+                  เปลี่ยนรหัสผ่าน
                 </button>
                 <button type="button" className="delete-account-button" onClick={handleDeleteAccount} disabled={loading}>
-                  Delete Account
+                  ลบบัญชีผู้ใช้
                 </button>
               </div>
             </form>

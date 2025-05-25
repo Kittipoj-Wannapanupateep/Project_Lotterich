@@ -51,13 +51,13 @@ const ResetPassword = () => {
       <div className="reset-card">
         <div className="reset-form">
           <form onSubmit={handleSubmit} autoComplete="on">
-            <h2 className="reset-title">Reset Password</h2>
+            <h2 className="reset-title">รีเซ็ตรหัสผ่าน</h2>
             <div className="form-group">
-              <label className="form-label">New Password</label>
+              <label className="form-label">รหัสผ่านใหม่</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showNewPassword ? 'text' : 'password'}
-                  placeholder="Enter new password"
+                  placeholder="กรุณากรอกรหัสผ่านใหม่"
                   value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   autoComplete="new-password"
@@ -72,11 +72,11 @@ const ResetPassword = () => {
               </div>
             </div>
             <div className="form-group">
-              <label className="form-label">Confirm New Password</label>
+              <label className="form-label">ยืนยันรหัสผ่านใหม่</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="Confirm new password"
+                  placeholder="ยืนยันรหัสผ่านใหม่"
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   autoComplete="new-password"
@@ -91,10 +91,10 @@ const ResetPassword = () => {
               </div>
             </div>
             <button type="submit" className="forgot-button" disabled={isSubmitting}>
-              {isSubmitting ? 'Processing...' : 'Reset Password'}
+              {isSubmitting ? 'กำลังดำเนินการ...' : 'รีเซ็ตรหัสผ่านใหม่'}
             </button>
             <div className="text-center mt-3">
-              <a href="/login" className="forgot-link">Back to Login</a>
+              <a href="/login" className="forgot-link">กลับไปยังหน้าเข้าสู่ระบบ</a>
             </div>
           </form>
         </div>

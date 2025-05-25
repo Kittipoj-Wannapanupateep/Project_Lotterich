@@ -6,8 +6,8 @@ const LoginPage = () => {
       <div className="login-container">
         <div className="login-card">
           <div className="login-info">
-            <h1>Welcome Back</h1>
-            <h1>To Lotterich</h1>
+            <h1>ยินดีต้อนรับกลับสู่</h1>
+            <h1>เว็บไซต์ Lotterich</h1>
             <p></p>
           </div>
           <div className="login-form">

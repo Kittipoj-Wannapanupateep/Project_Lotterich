@@ -57,12 +57,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', response.token)
         setUser({ ...response.user, role: response.user.role })
         await fetchProfile()
-        toast.success('Login successful')
+        toast.success('เข้าสู่ระบบสำเร็จ')
         return response.user
       }
       return false
     } catch (error) {
-      toast.error(error.message || 'Login failed')
+      toast.error(error.message || 'เข้าสู่ระบบล้มเหลว')
       return false
     }
   }
@@ -72,13 +72,13 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.register(userData)
       
       if (response.success) {
-        toast.success('Registration successful')
+        toast.success('สร้างบัญชีสำเร็จ')
         return true
       }
       
       return false
     } catch (error) {
-      toast.error(error.message || 'Registration failed')
+      toast.error(error.message || 'สร้างบัญชีล้มเหลว')
       return false
     }
   }
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token')
     setUser(null)
-    toast.success('Logged out successfully')
+    toast.success('ออกจากระบบเรียบร้อย')
   }
 
   const value = {

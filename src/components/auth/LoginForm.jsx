@@ -34,36 +34,36 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="on">
-      <h2 style={{ color: '#ffd700', marginBottom: '2rem', textAlign: 'center', fontWeight: 600 }}>Login</h2>
+      <h2 style={{ color: '#ffd700', marginBottom: '2rem', textAlign: 'center', fontWeight: 600 }}>เข้าสู่ระบบ</h2>
       {error && <div className="error-text" style={{marginBottom: '1rem'}}>{error}</div>}
       <div className="form-group">
-        <label className="form-label">Email</label>
+        <label className="form-label">อีเมล</label>
         <input
           type="email"
-          placeholder="Enter your email"
+          placeholder="กรุณากรอกอีเมล"
           autoComplete="username"
           {...register('email', {
-            required: 'Email is required',
+            required: 'กรุณากรอกอีเมล',
             pattern: {
               value: /^\S+@\S+\.\S+$/,
-              message: 'Please enter a valid email'
+              message: 'กรุณากรอกอีเมลที่ถูกต้อง'
             }
           })}
         />
         <p className="error-text">{errors.email?.message || ''}</p>
       </div>
       <div className="form-group">
-        <label className="form-label">Password</label>
+        <label className="form-label">รหัสผ่าน</label>
         <div className="input-wrapper">
           <input
             type={showPassword ? 'text' : 'password'}
-            placeholder="Enter your password"
+            placeholder="กรุณากรอกรหัสผ่าน"
             autoComplete="current-password"
             {...register('password', {
-              required: 'Password is required',
+              required: 'กรุณากรอกรหัสผ่าน',
               minLength: {
                 value: 6,
-                message: 'Password must be at least 6 characters'
+                message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'
               }
             })}
           />
@@ -93,12 +93,12 @@ const LoginForm = () => {
             />
             <span className="slider round"></span>
           </label>
-          <span className="remember-text">Remember me</span>
+          <span className="remember-text">จดจำการเข้าสู่ระบบ</span>
         </div>
-        <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
+        <a href="/forgot-password" className="forgot-password">ลืมรหัสผ่าน?</a>
       </div>
       <button type="submit" className="login-button" disabled={isSubmitting}>
-        {isSubmitting ? 'Logging in...' : 'LOGIN'}
+        {isSubmitting ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
       </button>
     </form>
   )

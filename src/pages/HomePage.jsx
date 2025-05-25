@@ -72,12 +72,12 @@ const HomePage = () => {
           <div className="welcome-card">
             <div className="welcome-info">
               <div className="welcome-text">
-                <h1 className="display-4 fw-bold">Welcome to</h1>
-                <h1 className="display-4 fw-bold">Website LotteRich</h1>
-                <p className="lead">Your gateway to premium experiences</p>
+                <h1 className="display-4 fw-bold">ยินดีต้อนรับสู่</h1>
+                <h1 className="display-4 fw-bold">เว็บไซต์ LotteRich</h1>
+                <p className="lead">ประตูสู่ประสบการณ์ระดับพรีเมียม</p>
                 <p className="welcome-description"></p>
                 <Link to="/login">
-                  <button className="btn btn-minimize">Get Started</button>
+                  <button className="btn btn-minimize">เริ่มต้นใช้งานทันที!</button>
                 </Link>
               </div>
             </div>
@@ -105,10 +105,10 @@ const HomePage = () => {
             </div>
           </div>
           <div className="col-md-6 text-md-start text-center">
-            <h2 className="display-5 fw-bold mb-4">Discover New Features</h2>
-            <p className="lead mb-4">Experience our latest innovations designed for you</p>
+            <h2 className="display-5 fw-bold mb-4">จัดการสลากด้วยตัวคุณเอง</h2>
+            <p className="lead mb-4">สัมผัสประสบการณ์การจัดการสลากลอตเตอรี่ล่าสุดที่ออกแบบมาเพื่อคุณ</p>
             <Link to="/login">
-              <button className="btn btn-close-app">Try Now</button>
+              <button className="btn btn-close-app">ลองทันที</button>
             </Link>
           </div>
         </div>
@@ -116,28 +116,28 @@ const HomePage = () => {
 
       {/* Section 3: Features Overview */}
       <section className="features-overview fade-in">
-        <h2 className="text-center mb-5">Our Features</h2>
+        <h2 className="text-center mb-5">Feature ของเว็บ</h2>
         <div className="row">
           <div className="col-md-3 feature-item">
             <div className="feature-icon">
               <i className="fas fa-ticket-alt fa-2x"></i>
             </div>
             <h3>Collection</h3>
-            <p>Organize and manage your lottery tickets</p>
+            <p>จัดการและจัดระเบียบสลากลอตเตอรี่ของคุณ</p>
           </div>
           <div className="col-md-3 feature-item">
             <div className="feature-icon">
               <i className="fas fa-chart-pie fa-2x"></i>
             </div>
             <h3>Overview</h3>
-            <p>Get a complete view of your lottery collection</p>
+            <p>ดูภาพรวมทั้งหมดของ Collection สลากลอตเตอรี่ของคุณ</p>
           </div>
           <div className="col-md-3 feature-item">
             <div className="feature-icon">
               <i className="fas fa-chart-line fa-2x"></i>
             </div>
             <h3>Statistics</h3>
-            <p>Analyze your lottery ticket performance</p>
+            <p>รายละเอียดสถิติการออกรางวัลของสลากลอตเตอรี่</p>
           </div>
         </div>
       </section>

@@ -51,8 +51,13 @@ body {
     font-weight: 500 !important;
 }
 
-.nav-link:hover {
+/* Add styles for active navigation link */
+.nav-link.active {
     color: #ffd700 !important;
+}
+
+.nav-link:hover {
+    color: #dcbb00 !important;
 }
 
 /* ------------------------ User Profile (Only for Login page) ------------------------ */

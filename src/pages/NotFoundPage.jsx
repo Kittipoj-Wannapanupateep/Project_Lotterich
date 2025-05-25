@@ -13,13 +13,12 @@ const NotFoundPage = () => {
           <Col md={8} lg={6}>
             <div className="not-found-content">
               <h1 className="not-found-title">404</h1>
-              <h2 className="not-found-heading">Page Not Found</h2>
+              <h2 className="not-found-heading">ไม่พบหน้าดังกล่าว</h2>
               <p className="not-found-text">
-                The page you are looking for might have been removed, had its name changed, 
-                or is temporarily unavailable.
+              หน้าที่คุณกำลังมองหาอาจถูกลบไปแล้วหรือไม่สามารถใช้งานได้ชั่วคราว
               </p>
               <Button as={Link} to={homeLink} variant="" className="btn-minimize">
-                Return to Home
+                กลับไปยังหน้าหลัก
               </Button>
             </div>
           </Col>

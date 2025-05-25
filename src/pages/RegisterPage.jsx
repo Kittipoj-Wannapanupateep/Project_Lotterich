@@ -7,8 +7,8 @@ const RegisterPage = () => {
       <div className="create-account-card">
       <RegisterForm />
         <div className="create-account-info">
-          <h1>Welcome to</h1>
-          <h1>Website Lotterich</h1>
+          <h1>ยินดีต้อนรับเข้าสู่</h1>
+          <h1>เว็บไซต์ Lotterich</h1>
           <p></p>
         </div>
         <div className="create-account-form-wrapper">

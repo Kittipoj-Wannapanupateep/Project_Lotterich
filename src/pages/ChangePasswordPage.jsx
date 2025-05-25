@@ -16,22 +16,22 @@ const ChangePasswordPage = () => {
     e.preventDefault()
     
     if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error('Please fill in all fields')
+      toast.error('กรุณากรอกข้อมูลทั้งหมด')
       return
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('New passwords do not match')
+      toast.error('รหัสผ่านไม่ตรงกัน')
       return
     }
 
     try {
       setLoading(true)
       await authService.changePassword(currentPassword, newPassword)
-      toast.success('Password changed successfully')
+      toast.success('เปลี่ยนรหัสผ่านสำเร็จ')
       navigate('/profile')
     } catch (error) {
-      toast.error(error.message || 'Failed to change password')
+      toast.error(error.message || 'ไม่สามารถเปลี่ยนรหัสผ่านได้')
     } finally {
       setLoading(false)
     }
@@ -58,17 +58,17 @@ const ChangePasswordPage = () => {
             <div className="profile-image-container">
               <img src="https://cdn-icons-png.flaticon.com/512/6195/6195699.png" alt="Profile Image" className="profile-image" />
             </div>
-            <h2>Change Password</h2>
+            <h2>เปลี่ยนรหัสผ่าน</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Current Password</label>
+                <label className="form-label">รหัสผ่านปัจจุบัน</label>
                 <div className="input-with-icon">
                   <input
                     type="password"
                     id="currentPassword"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Enter your current password"
+                    placeholder="พิมพ์รหัสผ่านปัจจุบัน"
                     disabled={loading}
                   />
                   <button
@@ -87,14 +87,14 @@ const ChangePasswordPage = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">New Password</label>
+                <label className="form-label">รหัสผ่านใหม่</label>
                 <div className="input-with-icon">
                   <input
                     type="password"
                     id="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Enter your new password"
+                    placeholder="พิมพ์รหัสผ่านใหม่"
                     disabled={loading}
                   />
                   <button
@@ -113,14 +113,14 @@ const ChangePasswordPage = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Confirm New Password</label>
+                <label className="form-label">ยืนยันรหัสผ่านใหม่</label>
                 <div className="input-with-icon">
                   <input
                     type="password"
                     id="confirmPassword"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm your new password"
+                    placeholder="ยืนยันรหัสผ่านใหม่"
                     disabled={loading}
                   />
                   <button
@@ -140,7 +140,7 @@ const ChangePasswordPage = () => {
               </div>
               <div className="profile-actions">
                 <button type="submit" className="save-password-button" disabled={loading}>
-                  Save Changes
+                  บันทึกการเปลี่ยนรหัสผ่าน
                 </button>
                 <button
                   type="button"
@@ -148,7 +148,7 @@ const ChangePasswordPage = () => {
                   onClick={() => navigate('/profile')}
                   disabled={loading}
                 >
-                  Cancel
+                  ยกเลิก
                 </button>
               </div>
             </form>

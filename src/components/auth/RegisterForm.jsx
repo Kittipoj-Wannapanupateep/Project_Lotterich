@@ -18,7 +18,7 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     if (!agreeTerms) {
-      setError('You must agree to the Terms & Conditions')
+      setError('คุณต้องยอมรับข้อกำหนดและเงื่อนไข')
       return
     }
     setIsSubmitting(true)
@@ -28,15 +28,15 @@ const RegisterForm = () => {
       if (success) {
         navigate('/login')
       } else {
-        setError('Sorry, something went wrong. Please try again.')
+        setError('ขออภัย มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่อีกครั้ง')
       }
     } catch (err) {
       // Check for duplicate email error from backend
       const msg = err?.response?.data?.error || ''
       if (msg.toLowerCase().includes('email already exists')) {
-        setError('This email is already in use.')
+        setError('อีเมลนี้ถูกใช้งานแล้ว')
       } else {
-        setError('Sorry, something went wrong. Please try again.')
+        setError('ขออภัย มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่อีกครั้ง')
       }
     } finally {
       setIsSubmitting(false)
@@ -45,42 +45,42 @@ const RegisterForm = () => {
 
   return (
     <div className="create-account-form">
-      <h2>Create Account</h2>
+      <h2>สร้างบัญชี</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-group">
-          <label className="form-label">Username</label>
+          <label className="form-label">ชื่อผู้ใช้</label>
           <input
             type="text"
-            placeholder="Enter your username"
+            placeholder="กรุณากรอกชื่อผู้ใช้"
             {...register('name', {
-              required: 'Username is required',
-              minLength: { value: 2, message: 'Username must be at least 2 characters' }
+              required: 'กรุณากรอกชื่อผู้ใช้',
+              minLength: { value: 2, message: 'ชื่อผู้ใช้ต้องมีอย่างน้อย 2 ตัวอักษร' }
             })}
           />
           {errors.name && <p className="error-text">{errors.name.message}</p>}
         </div>
         <div className="form-group">
-          <label className="form-label">Email</label>
+          <label className="form-label">อีเมล</label>
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="กรุณากรอกอีเมล"
             {...register('email', {
-              required: 'Email is required',
-              pattern: { value: /^\S+@\S+\.\S+$/, message: 'Please enter a valid email' }
+              required: 'กรุณากรอกอีเมล',
+              pattern: { value: /^\S+@\S+\.\S+$/, message: 'กรุณากรอกอีเมลที่ถูกต้อง' }
             })}
           />
           {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
         <div className="form-group">
-          <label className="form-label">Password</label>
+          <label className="form-label">รหัสผ่าน</label>
           <div className="input-wrapper">
             <input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
+              placeholder="กรุณากรอกรหัสผ่าน"
               {...register('password', {
-                required: 'Password is required',
-                minLength: { value: 6, message: 'Password must be at least 6 characters' }
+                required: 'กรุณากรอกรหัสผ่าน',
+                minLength: { value: 6, message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' }
               })}
             />
             <button
@@ -100,14 +100,14 @@ const RegisterForm = () => {
           <p className="error-text">{errors.password?.message || ''}</p>
         </div>
         <div className="form-group">
-          <label className="form-label">Confirm Password</label>
+          <label className="form-label">ยืนยันรหัสผ่าน</label>
           <div className="input-wrapper">
             <input
               type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Enter your confirm password"
+              placeholder="กรุณายืนยันรหัสผ่าน"
               {...register('confirmPassword', {
-                required: 'Please confirm your password',
-                validate: value => value === password || 'Passwords do not match'
+                required: 'กรุณายืนยันรหัสผ่าน',
+                validate: value => value === password || 'รหัสผ่านไม่ตรงกัน'
               })}
             />
             <button
@@ -136,11 +136,11 @@ const RegisterForm = () => {
               />
               <span className="slider round"></span>
             </label>
-            <span className="terms-text">I agree to the Terms & Conditions</span>
+            <span className="terms-text">ฉันยอมรับข้อกำหนดและเงื่อนไข</span>
           </div>
         </div>
         <button type="submit" className="create-account-button" disabled={isSubmitting}>
-          {isSubmitting ? 'Registering...' : 'Create Account'}
+          {isSubmitting ? 'กำลังสร้างบัญชี...' : 'สร้างบัญชี'}
         </button>
       </Form>
     </div>

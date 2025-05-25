@@ -39,7 +39,7 @@ func (r *UserRepository) Create(user models.User) (*models.User, error) {
 	err := r.collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&existingUser)
 	if err == nil {
 		log.Printf("Email already exists: %s", user.Email)
-		return nil, errors.New("email already exists")
+		return nil, errors.New("อีเมลนี้ถูกใช้งานแล้ว")
 	} else if err != mongo.ErrNoDocuments {
 		log.Printf("Error checking existing email: %v", err)
 		return nil, err
@@ -86,7 +86,7 @@ func (r *UserRepository) FindByID(id string) (*models.User, error) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			log.Printf("User not found with ID: %s", id)
-			return nil, errors.New("user not found")
+			return nil, errors.New("ไม่พบผู้ใช้งานนี้")
 		}
 		log.Printf("Error finding user: %v", err)
 		return nil, err
@@ -108,7 +108,7 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			log.Printf("User not found with email: %s", email)
-			return nil, errors.New("user not found")
+			return nil, errors.New("ไม่พบผู้ใช้งานนี้")
 		}
 		log.Printf("Error finding user: %v", err)
 		return nil, err
@@ -142,7 +142,7 @@ func (r *UserRepository) Update(user models.User) error {
 
 	if result.MatchedCount == 0 {
 		log.Printf("No user found to update with ID: %s", user.ID.Hex())
-		return errors.New("user not found")
+		return errors.New("ไม่พบผู้ใช้งานนี้")
 	}
 
 	log.Printf("Successfully updated user with ID: %s", user.ID.Hex())
@@ -177,7 +177,7 @@ func (r *UserRepository) UpdatePassword(userID string, newPasswordHash string) e
 
 	if result.MatchedCount == 0 {
 		log.Printf("No user found to update password with ID: %s", userID)
-		return errors.New("user not found")
+		return errors.New("ไม่พบผู้ใช้งานนี้")
 	}
 
 	log.Printf("Successfully updated password for user ID: %s", userID)
@@ -205,7 +205,7 @@ func (r *UserRepository) Delete(userID string) error {
 
 	if result.DeletedCount == 0 {
 		log.Printf("No user found to delete with ID: %s", userID)
-		return errors.New("user not found")
+		return errors.New("ไม่พบผู้ใช้งานนี้")
 	}
 
 	log.Printf("Successfully deleted user with ID: %s", userID)

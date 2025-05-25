@@ -75,14 +75,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	// Find user by email
 	user, err := h.userRepo.FindByEmail(input.Email)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "อีเมลไม่ถูกต้อง"})
 		return
 	}
 
 	// Verify password
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "รหัสผ่านไม่ถูกต้อง"})
 		return
 	}
 
@@ -174,7 +174,7 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	// Verify current password
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.CurrentPassword))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Current password is incorrect"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "รหัสผ่านปัจจุบันไม่ถูกต้อง"})
 		return
 	}
 
@@ -218,7 +218,7 @@ func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 	// Verify current password
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.CurrentPassword))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Current password is incorrect"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "รหัสผ่านปัจจุบันไม่ถูกต้อง"})
 		return
 	}
 
@@ -234,7 +234,7 @@ func (h *AuthHandler) DeleteAccount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Account deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "บัญชีได้ถูกลบเรียบร้อยแล้ว"})
 }
 
 // POST /auth/forgot-password
@@ -252,7 +252,7 @@ func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 	user, err := h.userRepo.FindByEmail(req.Email)
 	if err != nil {
 		fmt.Printf("Email not found: %v\n", err)
-		c.JSON(404, gin.H{"error": "Email not found"})
+		c.JSON(404, gin.H{"error": "ไม่พบอีเมลนี้ในฐานข้อมูล"})
 		return
 	}
 	fmt.Printf("User found: %s\n", user.Email)
@@ -290,11 +290,11 @@ func (h *AuthHandler) VerifyOTP(c *gin.Context) {
 	}
 	otp, err := h.otpRepo.FindByEmail(req.Email)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		c.JSON(400, gin.H{"error": "รหัส OTP ไม่ถูกต้อง"})
 		return
 	}
 	if otp.NumberOTP != req.OTP {
-		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		c.JSON(400, gin.H{"error": "รหัส OTP ไม่ถูกต้อง"})
 		return
 	}
 	if time.Since(otp.DateOTP) > 3*time.Minute {
@@ -303,7 +303,7 @@ func (h *AuthHandler) VerifyOTP(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "OTP expired"})
 		return
 	}
-	c.JSON(200, gin.H{"message": "OTP valid"})
+	c.JSON(200, gin.H{"message": "รหัส OTP หมดอายุ"})
 }
 
 // POST /auth/reset-password
@@ -319,11 +319,11 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	}
 	otp, err := h.otpRepo.FindByEmail(req.Email)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		c.JSON(400, gin.H{"error": "รหัส OTP ไม่ถูกต้อง"})
 		return
 	}
 	if otp.NumberOTP != req.OTP {
-		c.JSON(400, gin.H{"error": "Invalid OTP"})
+		c.JSON(400, gin.H{"error": "รหัส OTP ไม่ถูกต้อง"})
 		return
 	}
 	if time.Since(otp.DateOTP) > 3*time.Minute {
@@ -336,5 +336,5 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	user, _ := h.userRepo.FindByEmail(req.Email)
 	h.userRepo.UpdatePassword(user.ID.Hex(), hash)
 	h.otpRepo.DeleteByEmail(req.Email)
-	c.JSON(200, gin.H{"message": "Password reset successful"})
+	c.JSON(200, gin.H{"message": "รีเซ็ตรหัสผ่านสำเร็จ"})
 }
