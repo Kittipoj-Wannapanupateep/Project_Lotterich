@@ -267,6 +267,7 @@
     align-items: center;
     min-width: 120px;
     border-left: 1px solid rgba(255, 215, 0, 0.2);
+    background: #232323;
 }
 
 .collection-actions {

@@ -4,6 +4,21 @@ import '../styles/StatisticsPage.css';
 import { getAllStatistics } from '../services/statisticsService';
 import Select from 'react-select';
 
+// ฟังก์ชันแปลงวันที่เป็นรูปแบบไทย เช่น 1 พ.ค. 2567
+function formatThaiDate(dateStr) {
+  if (!dateStr) return '';
+  const months = [
+    '', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  const [y, m, d] = dateStr.split('-');
+  if (!y || !m || !d) return dateStr;
+  const day = parseInt(d, 10);
+  const month = months[parseInt(m, 10)];
+  const year = parseInt(y, 10) + 543;
+  return `${day} ${month} ${year}`;
+}
+
 const StatisticsPage = () => {
   const chartRef = useRef(null);
   const [statistics, setStatistics] = useState([]);
@@ -297,7 +312,7 @@ const StatisticsPage = () => {
   // Create options for react-select
   const dateOptions = statistics.map(stat => ({
     value: stat.date,
-    label: `งวดวันที่ ${stat.date}`
+    label: `งวดวันที่ ${formatThaiDate(stat.date)}`
   }));
   const selectedOption = dateOptions.find(opt => opt.value === selectedDate);
 
@@ -396,6 +411,10 @@ const StatisticsPage = () => {
                         </div>
                       </div>
                     </div>
+                    {/* แสดงวันที่งวดนี้ */}
+                    <div className="draw-date" style={{ color: '#FFD700', marginTop: 12, fontWeight: 'bold', fontSize: '1.1rem' }}>
+                      งวดวันที่ {formatThaiDate(selectedStat.date)}
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center text-muted">ไม่พบข้อมูลรางวัลสำหรับงวดนี้</div>
@@ -476,11 +495,11 @@ const StatisticsPage = () => {
                         <>
                           <p>เลข {searchNumber} เคยถูกรางวัลทั้งหมด {checkCount} ครั้ง</p>
                           <div className="winning-dates">
-                            <p>ประวัติการถูกรางวัล:</p>
+                            <p>ประวัติการถูกรางวัล</p>
                             <ul>
                               {checkResult.map((item, idx) => (
                                 <li key={idx}>
-                                  งวดวันที่ {item.date} ถูกรางวัล{item.type}
+                                  งวดวันที่ {formatThaiDate(item.date)} : ถูกรางวัล{item.type}
                                 </li>
                               ))}
                             </ul>

@@ -149,13 +149,13 @@
   font-weight: 500;
   color: #fff;
 }
-.right-collection {
+.manage-container .right-collection {
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  min-width: 120px;
+  min-width: 170px;
   border-left: 1px solid rgba(255,215,0,0.2);
   background: #232323;
 }

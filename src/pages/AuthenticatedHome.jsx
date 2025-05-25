@@ -6,6 +6,21 @@ import { getCollection } from '../services/collectionService'
 import { getLatestStatistics } from '../services/statisticsService'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 
+// ฟังก์ชันแปลงวันที่เป็นรูปแบบไทย เช่น 1 พ.ค. 2567
+function formatThaiDate(dateStr) {
+  if (!dateStr) return '';
+  const months = [
+    '', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  const [y, m, d] = dateStr.split('-');
+  if (!y || !m || !d) return dateStr;
+  const day = parseInt(d, 10);
+  const month = months[parseInt(m, 10)];
+  const year = parseInt(y, 10) + 543;
+  return `${day} ${month} ${year}`;
+}
+
 const AuthenticatedHome = () => {
   const { user } = useAuth()
   const chartRef = useRef(null)
@@ -225,8 +240,8 @@ const AuthenticatedHome = () => {
           <div className="row justify-content-center">
             <div className="col-lg-10">
               <div className="latest-results">
-                <h2 className="section-title">สรุปผลรางวัลล่าสุด</h2>
-                <div className="draw-date">งวดวันที่ {statistics?.date || 'ยังไม่มีข้อมูล'}</div>
+                <h2 className="section-title">สรุปผลรางวัลงวดล่าสุด</h2>
+                <div className="draw-date">งวดวันที่ {statistics?.date ? formatThaiDate(statistics.date) : 'ยังไม่มีข้อมูล'}</div>
                 <div className="prize-container">
                   <div className="main-prize">
                     <h3>รางวัลที่ 1</h3>

@@ -12,7 +12,7 @@ const formatDate = (dateString) => {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear() + 543}`;
 };
 
-const itemsPerPage = 3;
+const itemsPerPage = 5;
 
 const ManagePage = () => {
   const [draws, setDraws] = useState([]);
@@ -291,7 +291,7 @@ const ManagePage = () => {
                 <button className="btn-edit" onClick={() => handleOpenEditModal(draw)}><FaEdit /></button>
                 <button className="btn-delete" onClick={() => handleOpenDeleteConfirm(draw.id)}><FaTrash /></button>
               </div>
-              <div className="collection-date">{formatDate(draw.date)}</div>
+              <div className="collection-date">งวดที่ {formatDate(draw.date)}</div>
             </div>
           </div>
         ))}
