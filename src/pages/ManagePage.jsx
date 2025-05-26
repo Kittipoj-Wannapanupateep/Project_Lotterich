@@ -251,7 +251,7 @@ const ManagePage = () => {
           <input
             type="text"
             className="manage-search-input"
-            placeholder="ค้นหางวดวันที่"
+            placeholder="ค้นหางวดจากวันที่"
             value={search}
             onChange={handleInputChange}
           />
@@ -317,7 +317,7 @@ const ManagePage = () => {
         <Modal.Body>
           <form>
             <div className="mb-3">
-              <label className="form-label">งวดวันที่</label>
+              <label className="form-label">งวดประจำวันที่</label>
               <input type="date" className={`form-control${errors.date ? ' is-invalid' : ''}`} name="date" value={form.date} onChange={handleFormChange} />
               {errors.date && <div className="invalid-feedback" style={{display:'block'}}>{errors.date}</div>}
             </div>
@@ -360,7 +360,7 @@ const ManagePage = () => {
         <Modal.Body>
           <form>
             <div className="mb-3">
-              <label className="form-label">งวดวันที่</label>
+              <label className="form-label">งวดประจำวันที่</label>
               <input type="date" className={`form-control${errors.date ? ' is-invalid' : ''}`} name="date" value={form.date} onChange={handleFormChange} />
               {errors.date && <div className="invalid-feedback" style={{display:'block'}}>{errors.date}</div>}
             </div>

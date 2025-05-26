@@ -241,7 +241,7 @@ const AuthenticatedHome = () => {
             <div className="col-lg-10">
               <div className="latest-results">
                 <h2 className="section-title">สรุปผลรางวัลงวดล่าสุด</h2>
-                <div className="draw-date">งวดวันที่ {statistics?.date ? formatThaiDate(statistics.date) : 'ยังไม่มีข้อมูล'}</div>
+                <div className="draw-date">งวดประจำวันที่ {statistics?.date ? formatThaiDate(statistics.date) : 'ยังไม่มีข้อมูล'}</div>
                 <div className="prize-container">
                   <div className="main-prize">
                     <h3>รางวัลที่ 1</h3>

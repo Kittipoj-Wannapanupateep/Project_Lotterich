@@ -355,9 +355,8 @@ const CollectionPage = () => {
     
     // Export data
     const handleExport = () => {
-      console.log("Exporting data:", filteredItems);
-      // Implementation would typically involve creating a CSV or Excel file
-      alert("Export functionality would be implemented here");
+      const csv = convertToCSVForExport(filteredItems);
+      downloadCSV(csv);
     };
     
     // Calculate pagination
@@ -576,7 +575,7 @@ const CollectionPage = () => {
         errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
       if (addPrizeStatus === 'announced' && !addPrizeDate) {
-        errors.prizeDate = 'กรุณาเลือกงวดรางวัล';
+        errors.prizeDate = 'กรุณาเลือกวันที่ประกาศรางวัล';
       }
       return errors;
     };
@@ -591,7 +590,7 @@ const CollectionPage = () => {
         errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
       if (editPrizeStatus === 'announced' && !editPrizeDate) {
-        errors.prizeDate = 'กรุณาเลือกงวดรางวัล';
+        errors.prizeDate = 'กรุณาเลือกวันที่ประกาศรางวัล';
       }
       return errors;
     };
@@ -612,6 +611,78 @@ const CollectionPage = () => {
       const month = months[parseInt(m, 10)];
       const year = parseInt(y, 10) + 543;
       return `${day} ${month} ${year}`;
+    }
+
+    // ฟังก์ชันแปลงข้อมูลเป็น CSV ตามฟอร์แมตที่ต้องการ
+    function convertToCSVForExport(data) {
+      const header = [
+        'วันที่ซื้อ',
+        'เลขที่ซื้อ',
+        'จำนวนสลากที่ซื้อ',
+        'ราคาต่อใบ',
+        'สถานะของรางวัล',
+        'ประเภทของรางวัล',
+        'จำนวนเงินของรางวัล',
+        'งวดประจำวันที่',
+        'รายจ่ายสุทธิ',
+        'จำนวนเงินสุทธิ'
+      ];
+      // เรียงวันที่ซื้อจากเก่าสุดไปใหม่สุด
+      const sorted = [...data].sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
+      const rows = sorted.map(item => {
+        const expense = item.ticketCount * item.ticketPrice;
+        const net = (item.prizeAmount || 0) - expense;
+        // แปลงสถานะรางวัลเป็นไทย
+        let prizeStatusTh = '';
+        if (item.prizeStatus === 'pending') prizeStatusTh = 'ยังไม่ประกาศผลรางวัล';
+        else if (item.prizeStatus === 'announced') prizeStatusTh = 'ประกาศผลรางวัลแล้ว';
+        else prizeStatusTh = item.prizeStatus || '';
+        // แปลงประเภทของรางวัลเป็นไทย
+        let prizeTypeTh = '';
+        switch (item.prizeType) {
+          case 'prize1': prizeTypeTh = 'ถูกรางวัลที่ 1'; break;
+          case 'near1': prizeTypeTh = 'ถูกรางวัลข้างเคียงที่ 1'; break;
+          case 'first3': prizeTypeTh = 'ถูกรางวัลสามตัวหน้า'; break;
+          case 'last3': prizeTypeTh = 'ถูกรางวัลสามตัวท้าย'; break;
+          case 'last2': prizeTypeTh = 'ถูกรางวัลสองตัวท้าย'; break;
+          case 'lose':
+          case '':
+          case undefined:
+            prizeTypeTh = 'ไม่ถูกรางวัล';
+            break;
+          default:
+            prizeTypeTh = item.prizeType;
+        }
+        return [
+          item.purchaseDate,
+          item.lotteryNumber,
+          item.ticketCount,
+          item.ticketPrice,
+          prizeStatusTh,
+          prizeTypeTh,
+          item.prizeAmount,
+          item.prizeDate,
+          expense,
+          net
+        ];
+      });
+      return [header, ...rows].map(row => row.join(',')).join('\r\n');
+    }
+
+    function downloadCSV(csv, filename = 'MyCollection_Lotterich.csv') {
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     }
 
     return (
@@ -684,7 +755,12 @@ const CollectionPage = () => {
                     item.prizeStatus === 'announced' ? 'announced' : ''
                   }`}></div>
                   <div className="middle-collection">
-                    <h2 className="lottery-number">เลข {item.lotteryNumber}</h2>
+                    {item.prizeDate && (
+                      <div className="prize-draw-date-top">
+                        งวดประจำวันที่ {formatThaiDate(item.prizeDate)}
+                      </div>
+                    )}
+                    <h1 className="lottery-number">เลข {item.lotteryNumber}</h1>
                     <div className="lottery-details">
                       <div className="detail-box ticket-count-box">
                         <div className="ticket-count">จำนวน {item.ticketCount} ใบ (฿{item.ticketPrice}/ใบ)</div>
@@ -696,7 +772,7 @@ const CollectionPage = () => {
                                {(!item.prizeType || item.prizeType === 'lose') ? 'ไม่ถูกรางวัล' : `ถูกรางวัล${translatePrizeType(item.prizeType)}`}
                               </>)
                             : item.prizeStatus === 'announced'
-                              ? (<>ประกาศแล้ว{item.prizeDate ? <span> งวดวันที่ {formatThaiDate(item.prizeDate)}</span> : ' (ยังไม่ได้เลือกงวด)'}</>)
+                              ? (<>ประกาศแล้ว{item.prizeDate ? <span> งวดประจำวันที่ {formatThaiDate(item.prizeDate)}</span> : ' (ยังไม่ได้เลือกงวด)'}</>)
                               : translatePrizeStatus(item.prizeStatus)
                           }
                         </div>
@@ -719,7 +795,7 @@ const CollectionPage = () => {
                         <FaTrash />
                       </button>
                     </div>
-                    <div className="collection-date">{formatDate(item.purchaseDate)}</div>
+                    <div className="collection-date">ซื้อวันที่ {formatDate(item.purchaseDate)}</div>
                   </div>
                 </div>
               ))}
@@ -812,12 +888,12 @@ const CollectionPage = () => {
               </div>
               {addPrizeStatus === 'announced' && (
                 <div className="mb-3">
-                  <label htmlFor="addPrizeDate" className="form-label">เลือกงวดรางวัล</label>
+                  <label htmlFor="addPrizeDate" className="form-label">เลือกวันที่ประกาศรางวัล</label>
                   <Select
                     id="addPrizeDate"
-                    value={prizeDateList.find(d => d === addPrizeDate) ? { value: addPrizeDate, label: `งวดวันที่ ${formatThaiDate(addPrizeDate)}` } : null}
+                    value={prizeDateList.find(d => d === addPrizeDate) ? { value: addPrizeDate, label: `งวดประจำวันที่ ${formatThaiDate(addPrizeDate)}` } : null}
                     onChange={opt => setAddPrizeDate(opt.value)}
-                    options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
+                    options={prizeDateList.map(date => ({ value: date, label: `งวดประจำวันที่ ${formatThaiDate(date)}` }))}
                     placeholder="เลือกงวด"
                     classNamePrefix={addErrors.prizeDate ? 'is-invalid' : ''}
                     className={addErrors.prizeDate ? 'is-invalid' : ''}
@@ -963,12 +1039,12 @@ const CollectionPage = () => {
                                     </div>
                                     {editPrizeStatus === 'announced' && (
                                         <div className="mb-3">
-                                            <label htmlFor="editPrizeDate" className="form-label">เลือกงวดรางวัล</label>
+                                            <label htmlFor="editPrizeDate" className="form-label">เลือกวันที่ประกาศรางวัล</label>
                                             <Select
                                                 id="editPrizeDate"
-                                                value={prizeDateList.find(d => d === editPrizeDate) ? { value: editPrizeDate, label: `งวดวันที่ ${formatThaiDate(editPrizeDate)}` } : null}
+                                                value={prizeDateList.find(d => d === editPrizeDate) ? { value: editPrizeDate, label: `งวดประจำวันที่ ${formatThaiDate(editPrizeDate)}` } : null}
                                                 onChange={opt => setEditPrizeDate(opt.value)}
-                                                options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
+                                                options={prizeDateList.map(date => ({ value: date, label: `งวดประจำวันที่ ${formatThaiDate(date)}` }))}
                                                 placeholder="เลือกงวด"
                                                 classNamePrefix={editErrors.prizeDate ? 'is-invalid' : ''}
                                                 className={editErrors.prizeDate ? 'is-invalid' : ''}

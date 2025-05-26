@@ -16,14 +16,14 @@
   font-size: 2.5rem;
 }
 
-.manage-controls {
+.manage-container .manage-controls {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
-.manage-search-input {
+.manage-container .manage-search-input {
   flex: 1;
   min-width: 200px;
   padding: 0.5rem 1rem;
@@ -33,12 +33,12 @@
   color: #fff;
   transition: all 0.3s;
 }
-.manage-search-input:focus {
+.manage-container .manage-search-input:focus {
   border-color: #FFD700;
   outline: none;
 }
 
-.manage-btn {
+.manage-container .manage-btn {
   padding: 0.5rem 1.2rem;
   border-radius: 4px;
   font-weight: 500;
@@ -50,46 +50,46 @@
   align-items: center;
   gap: 0.5rem;
 }
-.add-btn {
+.manage-container .add-btn {
   background-color: #FFD700;
   color: #000;
 }
-.add-btn:hover {
+.manage-container .add-btn:hover {
   background-color: #333;
   color: #FFD700;
   box-shadow: 0 4px 8px rgba(255,215,0,0.2);
 }
-.select-btn {
+.manage-container .select-btn {
   background-color: transparent;
   color: #FFD700;
   border: 1px solid #FFD700;
 }
-.select-btn:hover {
+.manage-container .select-btn:hover {
   background-color: #FFD700;
   color: #000;
 }
-.edit-btn {
+.manage-container .edit-btn {
   background-color: #FFD700;
   color: #000;
 }
-.edit-btn:hover {
+.manage-container .edit-btn:hover {
   background-color: #ccac00;
 }
-.delete-btn {
+.manage-container .delete-btn {
   background-color: #FF4444;
   color: #fff;
 }
-.delete-btn:hover {
+.manage-container .delete-btn:hover {
   background-color: #cc3333;
 }
 
-.manage-content-list {
+.manage-container .manage-content-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.manage-content-item {
+.manage-container .manage-content-item {
   display: flex;
   flex-direction: row;
   border: 1px solid #FFD700;
@@ -99,29 +99,29 @@
   overflow: hidden;
   align-items: stretch;
 }
-.manage-content-item:hover {
+.manage-container .manage-content-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(255,215,0,0.2);
 }
-.left-collection {
+.manage-container .left-collection {
   width: 20px;
   background-color: #6e6e6e;
 }
-.middle-collection {
+.manage-container .middle-collection {
   flex-grow: 1;
   padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-.lottery-number {
-  font-size: 2rem;
+.manage-container .lottery-number {
+  font-size: 40px;
   font-weight: bold;
   color: #fff;
   text-align: center;
   margin: 0.5rem 0;
 }
-.lottery-details {
+.manage-container .lottery-details {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -130,7 +130,7 @@
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
-.detail-box {
+.manage-container .detail-box {
   background-color: #333;
   border: 1px solid #FFD700;
   border-radius: 4px;
@@ -139,11 +139,11 @@
   text-align: center;
   transition: all 0.3s;
 }
-.detail-box:hover {
+.manage-container .detail-box:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 4px rgba(255,215,0,0.2);
 }
-.ticket-count, .prize-status, .similarity {
+.manage-container .ticket-count, .manage-container .prize-status, .manage-container .similarity {
   font-size: 0.9rem;
   font-weight: 500;
   color: #fff;
@@ -158,11 +158,11 @@
   border-left: 1px solid rgba(255,215,0,0.2);
   background: #232323;
 }
-.collection-actions {
+.manage-container .collection-actions {
   display: flex;
   gap: 0.7rem;
 }
-.btn-edit, .btn-delete {
+.manage-container .btn-edit, .manage-container .btn-delete {
   padding: 0.5rem;
   border-radius: 4px;
   border: none;
@@ -175,35 +175,35 @@
   align-items: center;
   justify-content: center;
 }
-.btn-edit {
+.manage-container .btn-edit {
   background-color: #FFD700;
   color: #000;
 }
-.btn-edit:hover {
+.manage-container .btn-edit:hover {
   background-color: #ccac00;
 }
-.btn-delete {
+.manage-container .btn-delete {
   background-color: #FF4444;
   color: #fff;
 }
-.btn-delete:hover {
+.manage-container .btn-delete:hover {
   background-color: #cc3333;
 }
-.collection-date {
+.manage-container .collection-date {
   color: #bdbdbd;
   font-size: 1rem;
   font-weight: 400;
   margin-top: 0.5rem;
   text-align: right;
 }
-.pagination {
+.manage-container .pagination {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
   margin-top: 2rem;
   flex-wrap: wrap;
 }
-.pagination .btn {
+.manage-container .pagination .btn {
   min-width: 40px;
   height: 40px;
   display: flex;
@@ -213,26 +213,26 @@
   transition: all 0.3s;
   padding: 0.5rem;
 }
-.pagination .btn-outline-primary {
+.manage-container .pagination .btn-outline-primary {
   color: #FFD700;
   border-color: #FFD700;
   background-color: transparent;
 }
-.pagination .btn-outline-primary:hover {
+.manage-container .pagination .btn-outline-primary:hover {
   background-color: #FFD700;
   color: #000;
 }
-.pagination .btn-primary {
+.manage-container .pagination .btn-primary {
   background-color: #FFD700;
   color: #000;
   border-color: #FFD700;
 }
-.pagination .btn-primary:hover {
+.manage-container .pagination .btn-primary:hover {
   background-color: #FFD700;
   border-color: #FFD700;
   color: #000;
 }
-.pagination-ellipsis {
+.manage-container .pagination-ellipsis {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,29 +242,29 @@
   font-size: 1.2rem;
   padding: 0 10px;
 }
-.empty-state, .no-results {
+.manage-container .empty-state, .manage-container .no-results {
   text-align: center;
   padding: 3rem 1rem;
   background-color: #333;
   border-radius: 8px;
   margin: 2rem 0;
 }
-.empty-state-icon, .no-results-icon {
+.manage-container .empty-state-icon, .manage-container .no-results-icon {
   font-size: 4rem;
   color: #FFD700;
   margin-bottom: 1.5rem;
 }
-.empty-state h3, .no-results h3 {
+.manage-container .empty-state h3, .manage-container .no-results h3 {
   color: #fff;
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-.empty-state p, .no-results p {
+.manage-container .empty-state p, .manage-container .no-results p {
   color: #cccccc;
   font-size: 1.1rem;
   margin-bottom: 0;
 }
-.clear-search-btn {
+.manage-container .clear-search-btn {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -283,18 +283,18 @@
   height: 30px;
   border-radius: 50%;
 }
-.clear-search-btn:hover {
+.manage-container .clear-search-btn:hover {
   background-color: rgba(255, 215, 0, 0.1);
 }
-.clear-search-btn:focus {
+.manage-container .clear-search-btn:focus {
   outline: none;
 }
-.manage-search-input-container {
+.manage-container .manage-search-input-container {
   position: relative;
   flex: 1;
   min-width: 200px;
 }
-.manage-search-input {
+.manage-container .manage-search-input {
   width: 100%;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -304,10 +304,10 @@
   transition: all 0.3s;
 }
 
-.form-control.is-invalid {
+.manage-container .form-control.is-invalid {
   border-color: #ff6b6b;
 }
-.invalid-feedback {
+.manage-container .invalid-feedback {
   color: #ff6b6b;
   font-size: 0.9rem;
   margin-top: 0.3rem;
@@ -315,7 +315,7 @@
 }
 
 /* Modal styles */
-.manage-modal-backdrop {
+.manage-container .manage-modal-backdrop {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.5);
@@ -324,7 +324,7 @@
   align-items: center;
   justify-content: center;
 }
-.manage-modal {
+.manage-container .manage-modal {
   background: #2a2a2a;
   border: 2px solid #FFD700;
   border-radius: 15px;
@@ -335,29 +335,29 @@
   color: #fff;
   z-index: 1100;
 }
-.modal-title {
+.manage-container .modal-title {
   color: white;
 }
 
-.manage-modal h2 {
+.manage-container .manage-modal h2 {
   color: #ffffff;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   text-align: center;
 }
-.modal-field {
+.manage-container .modal-field {
   margin-bottom: 1.2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-.modal-field label {
+.manage-container .modal-field label {
   min-width: 100px;
   color: #FFD700;
   font-weight: 500;
 }
-.modal-field input {
+.manage-container .modal-field input {
   background: #1a1a1a;
   border: 1px solid #FFD700;
   color: #fff;
@@ -366,18 +366,18 @@
   font-size: 1rem;
   transition: all 0.3s;
 }
-.modal-field input:focus {
+.manage-container .modal-field input:focus {
   border-color: #FFD700;
   outline: none;
 }
-.modal-actions {
+.manage-container .modal-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
   margin-top: 1.5rem;
 }
 
-.prize1-box {
+.manage-container .prize1-box {
   background: #1a1a1a;
   border: 2px solid #FFD700;
   border-radius: 8px;
@@ -392,19 +392,19 @@
   margin-left: auto;
   margin-right: auto;
 }
-.prize1-label {
+.manage-container .prize1-label {
   color: #FFD700;
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.1rem;
 }
-.prize1-value {
+.manage-container .prize1-value {
   color: #fff;
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 1px;
 }
-.manage-content-actions {
+.manage-container .manage-content-actions {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -414,27 +414,27 @@
   background: #232323;
   padding: 1.5rem 1rem;
 }
-.actions-top {
+.manage-container .actions-top {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
   width: 100%;
   align-items: center;
 }
-.actions-bottom {
+.manage-container .actions-bottom {
   margin-top: 2.5rem;
   width: 100%;
   display: flex;
   justify-content: flex-end;
 }
-.actions-bottom .draw-date {
+.manage-container .actions-bottom .draw-date {
   color: #FFD700;
   font-size: 1.05rem;
   font-weight: 600;
   text-align: right;
 }
 
-.similarity-box {
+.manage-container .similarity-box {
   background-color: #333;
   border: 1px solid #FFD700;
   border-radius: 4px;
@@ -444,7 +444,7 @@
   transition: all 0.3s;
   display: block;
 }
-.similarity {
+.manage-container .similarity {
   font-size: 0.9rem;
   font-weight: 500;
   color: #fff;
@@ -454,48 +454,48 @@
   .manage-container {
     padding: 1rem;
   }
-  .manage-title {
+  .manage-container .manage-title {
     font-size: 2rem;
   }
-  .manage-content-main {
+  .manage-container .manage-content-main {
     padding: 1rem 0.5rem;
   }
-  .manage-content-actions {
+  .manage-container .manage-content-actions {
     min-width: 100px;
     padding: 1rem 0.5rem;
   }
-  .prize-box {
+  .manage-container .prize-box {
     min-width: 90px;
     padding: 0.5rem 0.7rem;
     font-size: 1rem;
   }
-  .manage-modal {
+  .manage-container .manage-modal {
     padding: 1.2rem 0.7rem;
   }
-  .prize1-box {
+  .manage-container .prize1-box {
     padding: 0.5rem 0.7rem 0.3rem 0.7rem;
     font-size: 0.95rem;
     max-width: 100%;
   }
-  .prize1-value {
+  .manage-container .prize1-value {
     font-size: 1.1rem;
   }
-  .manage-content-actions-horizontal {
+  .manage-container .manage-content-actions-horizontal {
     min-width: 90px;
     padding: 1rem 0.5rem 0.7rem 0.5rem;
   }
-  .actions-btn-row .manage-btn {
+  .manage-container .actions-btn-row .manage-btn {
     width: 38px;
     height: 38px;
     font-size: 1.1rem;
   }
-  .draw-date-collection {
+  .manage-container .draw-date-collection {
     font-size: 0.95rem;
   }
-  .draw-prizes-row {
+  .manage-container .draw-prizes-row {
     gap: 0.5rem;
   }
-  .modal-dialog, .manage-modal {
+  .manage-container .modal-dialog, .manage-container .manage-modal {
     margin: 0 auto !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -505,7 +505,7 @@
   }
 }
 @media (max-width: 576px) {
-  .modal-dialog, .manage-modal {
+  .manage-container .modal-dialog, .manage-container .manage-modal {
     margin: 0 auto !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -515,13 +515,13 @@
   }
 }
 @media (max-width: 480px) {
-  .manage-title {
+  .manage-container .manage-title {
     font-size: 1.3rem;
   }
-  .manage-content-item {
+  .manage-container .manage-content-item {
     flex-direction: column;
   }
-  .manage-content-actions {
+  .manage-container .manage-content-actions {
     border-left: none;
     border-top: 1px solid rgba(255,215,0,0.2);
     flex-direction: row;
@@ -530,45 +530,45 @@
     gap: 1rem;
     justify-content: space-between;
   }
-  .actions-top {
+  .manage-container .actions-top {
     flex-direction: row;
     gap: 0.7rem;
     align-items: flex-start;
   }
-  .actions-bottom {
+  .manage-container .actions-bottom {
     margin-top: 0;
     justify-content: flex-end;
     align-items: flex-end;
   }
-  .prize-box {
+  .manage-container .prize-box {
     min-width: unset;
     width: 100%;
     padding: 0.3rem 0.5rem;
     font-size: 0.95rem;
   }
-  .manage-modal {
+  .manage-container .manage-modal {
     min-width: 90vw;
     padding: 0.7rem 0.2rem;
   }
-  .modal-field label {
+  .manage-container .modal-field label {
     min-width: 70px;
     font-size: 0.95rem;
   }
-  .modal-field input {
+  .manage-container .modal-field input {
     font-size: 0.95rem;
     padding: 0.4rem 0.7rem;
   }
-  .prize1-box {
+  .manage-container .prize1-box {
     font-size: 0.9rem;
     padding: 0.3rem 0.5rem 0.2rem 0.5rem;
   }
-  .prize1-value {
+  .manage-container .prize1-value {
     font-size: 1rem;
   }
-  .draw-date-collection {
+  .manage-container .draw-date-collection {
     font-size: 0.9rem;
   }
-  .draw-prizes-row {
+  .manage-container .draw-prizes-row {
     flex-direction: column;
     gap: 0.5rem;
   }

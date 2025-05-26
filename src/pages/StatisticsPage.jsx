@@ -312,7 +312,7 @@ const StatisticsPage = () => {
   // Create options for react-select
   const dateOptions = statistics.map(stat => ({
     value: stat.date,
-    label: `งวดวันที่ ${formatThaiDate(stat.date)}`
+    label: `งวดประจำวันที่ ${formatThaiDate(stat.date)}`
   }));
   const selectedOption = dateOptions.find(opt => opt.value === selectedDate);
 
@@ -419,7 +419,7 @@ const StatisticsPage = () => {
                     </div>
                     {/* แสดงวันที่งวดนี้ */}
                     <div className="draw-date" style={{ color: '#FFD700', marginTop: 12, fontWeight: 'bold', fontSize: '1.1rem' }}>
-                      งวดวันที่ {formatThaiDate(selectedStat.date)}
+                      งวดประจำวันที่ {formatThaiDate(selectedStat.date)}
                     </div>
                   </div>
                 ) : (
@@ -505,7 +505,7 @@ const StatisticsPage = () => {
                             <ul>
                               {checkResult.map((item, idx) => (
                                 <li key={idx}>
-                                  งวดวันที่ {formatThaiDate(item.date)} : ถูกรางวัล{item.type}
+                                  งวดประจำวันที่ {formatThaiDate(item.date)} : ถูกรางวัล{item.type}
                                 </li>
                               ))}
                             </ul>
