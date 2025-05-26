@@ -70,3 +70,17 @@ func (r *CollectionRepository) DeleteByEmail(email string) error {
 	_, err := r.collection.DeleteMany(ctx, bson.M{"email": email})
 	return err
 }
+
+// UpdatePrizeFieldsByDate updates prize fields for collections with matching prize date
+func (r *CollectionRepository) UpdatePrizeFieldsByDate(ctx context.Context, date string) error {
+	update := bson.M{
+		"$set": bson.M{
+			"prize_date":   "",
+			"prize_result": "pending",
+			"prize_type":   "",
+			"prize_amount": 0,
+		},
+	}
+	_, err := r.collection.UpdateMany(ctx, bson.M{"prize_date": date}, update)
+	return err
+}

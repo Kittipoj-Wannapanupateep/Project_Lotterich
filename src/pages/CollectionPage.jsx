@@ -819,12 +819,13 @@ const CollectionPage = () => {
                     onChange={opt => setAddPrizeDate(opt.value)}
                     options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
                     placeholder="เลือกงวด"
+                    classNamePrefix={addErrors.prizeDate ? 'is-invalid' : ''}
                     className={addErrors.prizeDate ? 'is-invalid' : ''}
                     styles={{
                       control: (base, state) => ({
                         ...base,
                         backgroundColor: '#1a1a1a',
-                        borderColor: '#FFD700',
+                        borderColor: addErrors.prizeDate ? '#ff4d4f' : '#FFD700',
                         color: '#fff',
                         fontWeight: 'normal',
                         fontSize: '1rem',
@@ -834,7 +835,7 @@ const CollectionPage = () => {
                         paddingTop: '5px',
                         paddingBottom: '5px',
                         borderRight: 'none',
-                        '&:hover': { borderColor: '#FFD700' }
+                        '&:hover': { borderColor: addErrors.prizeDate ? '#ff4d4f' : '#FFD700' }
                       }),
                       menu: (base) => ({
                         ...base,
@@ -969,12 +970,13 @@ const CollectionPage = () => {
                                                 onChange={opt => setEditPrizeDate(opt.value)}
                                                 options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
                                                 placeholder="เลือกงวด"
+                                                classNamePrefix={editErrors.prizeDate ? 'is-invalid' : ''}
                                                 className={editErrors.prizeDate ? 'is-invalid' : ''}
                                                 styles={{
                                                     control: (base, state) => ({
                                                         ...base,
                                                         backgroundColor: '#1a1a1a',
-                                                        borderColor: '#FFD700',
+                                                        borderColor: editErrors.prizeDate ? '#ff4d4f' : '#FFD700',
                                                         color: '#fff',
                                                         fontWeight: 'normal',
                                                         fontSize: '1rem',
@@ -984,7 +986,7 @@ const CollectionPage = () => {
                                                         paddingTop: '5px',
                                                         paddingBottom: '5px',
                                                         borderRight: 'none',
-                                                        '&:hover': { borderColor: '#FFD700' }
+                                                        '&:hover': { borderColor: editErrors.prizeDate ? '#ff4d4f' : '#FFD700' }
                                                     }),
                                                     menu: (base) => ({
                                                         ...base,

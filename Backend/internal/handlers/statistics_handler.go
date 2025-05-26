@@ -14,11 +14,15 @@ import (
 )
 
 type StatisticsHandler struct {
-	repo *repositories.StatisticsRepository
+	repo           *repositories.StatisticsRepository
+	collectionRepo *repositories.CollectionRepository
 }
 
-func NewStatisticsHandler(repo *repositories.StatisticsRepository) *StatisticsHandler {
-	return &StatisticsHandler{repo: repo}
+func NewStatisticsHandler(repo *repositories.StatisticsRepository, collectionRepo *repositories.CollectionRepository) *StatisticsHandler {
+	return &StatisticsHandler{
+		repo:           repo,
+		collectionRepo: collectionRepo,
+	}
 }
 
 func (h *StatisticsHandler) CreateStatistics(c *gin.Context) {
@@ -84,10 +88,26 @@ func (h *StatisticsHandler) DeleteStatistics(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
-	if err := h.repo.Delete(context.Background(), objectID); err != nil {
+
+	// Get the statistics data before deleting to get the date
+	stat, err := h.repo.GetByID(c.Request.Context(), objectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get statistics"})
+		return
+	}
+
+	// Delete the statistics
+	if err := h.repo.Delete(c.Request.Context(), objectID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Update collection prize fields for the deleted statistics date
+	if err := h.collectionRepo.UpdatePrizeFieldsByDate(c.Request.Context(), stat.Date); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update collection prize fields"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Statistics deleted successfully"})
 }
 

@@ -65,3 +65,12 @@ func (r *StatisticsRepository) Update(ctx context.Context, id primitive.ObjectID
 	_, err := r.collection.UpdateOne(ctx, map[string]interface{}{"_id": id}, map[string]interface{}{"$set": update})
 	return err
 }
+
+func (r *StatisticsRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*models.Statistics, error) {
+	var stat models.Statistics
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&stat)
+	if err != nil {
+		return nil, err
+	}
+	return &stat, nil
+}

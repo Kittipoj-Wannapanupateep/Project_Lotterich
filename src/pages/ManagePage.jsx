@@ -49,7 +49,7 @@ const ManagePage = () => {
 
       // Transform the data to match the expected format
       const transformedData = data.map(stat => ({
-        id: stat.id || stat._id || '',
+        id: stat.id || stat._id || (stat.ID ? stat.ID : ''),
         date: stat.date,
         prize1: stat.prize1,
         first3: [
@@ -159,15 +159,8 @@ const ManagePage = () => {
         last2: form.last2
       };
 
-      const newStat = await addStatistics(payload);
-      setDraws([{
-        id: newStat.id,
-        date: newStat.date,
-        prize1: newStat.prize1,
-        first3: [newStat.first3_one, newStat.first3_two],
-        last3: [newStat.last3_one, newStat.last3_two],
-        last2: newStat.last2
-      }, ...draws]);
+      await addStatistics(payload);
+      await fetchStatistics();
       setShowAddModal(false);
       setSuccessAction('add');
       setShowSuccessModal(true);
