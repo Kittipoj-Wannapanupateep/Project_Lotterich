@@ -15,6 +15,6 @@ type Collection struct {
 	PrizeResult    string             `bson:"prize_result" json:"prizeResult"`
 	PrizeType      string             `bson:"prize_type" json:"prizeType"`
 	PrizeAmount    int                `bson:"prize_amount" json:"prizeAmount"`
-	TicketWinning  string             `bson:"ticket_winning" json:"ticketWinning"`
+	PrizeDate      string             `bson:"prize_date" json:"prize_date"`
 	Email          string             `bson:"email" json:"email"`
 }

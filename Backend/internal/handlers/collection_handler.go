@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -11,11 +12,12 @@ import (
 )
 
 type CollectionHandler struct {
-	repo *repositories.CollectionRepository
+	repo           *repositories.CollectionRepository
+	statisticsRepo *repositories.StatisticsRepository
 }
 
-func NewCollectionHandler(repo *repositories.CollectionRepository) *CollectionHandler {
-	return &CollectionHandler{repo: repo}
+func NewCollectionHandler(repo *repositories.CollectionRepository, statisticsRepo *repositories.StatisticsRepository) *CollectionHandler {
+	return &CollectionHandler{repo: repo, statisticsRepo: statisticsRepo}
 }
 
 func (h *CollectionHandler) GetAll(c *gin.Context) {
@@ -63,6 +65,39 @@ func (h *CollectionHandler) Create(c *gin.Context) {
 		input.Date = time.Now()
 	}
 
+	// ตรวจรางวัลถ้ามี prize_date
+	if input.PrizeDate != "" {
+		// ดึงข้อมูล statistics ของงวดนั้น
+		stats, err := h.statisticsRepo.GetAll(c)
+		if err == nil {
+			var stat *models.Statistics
+			for _, s := range stats {
+				if s.Date == input.PrizeDate {
+					stat = &s
+					break
+				}
+			}
+			if stat != nil {
+				// ตรวจสอบรางวัล
+				prizeType, prizeAmount := checkPrize(input.TicketNumber, stat)
+				input.PrizeType = prizeType
+				input.PrizeAmount = prizeAmount
+				if input.PrizeType == "" {
+					input.PrizeType = "lose"
+				}
+			} else {
+				input.PrizeType = ""
+				input.PrizeAmount = 0
+			}
+		} else {
+			input.PrizeType = ""
+			input.PrizeAmount = 0
+		}
+	} else {
+		input.PrizeType = ""
+		input.PrizeAmount = 0
+	}
+
 	// Create item
 	item, err := h.repo.Create(input)
 	if err != nil {
@@ -88,6 +123,38 @@ func (h *CollectionHandler) Update(c *gin.Context) {
 	}
 	input.ID = objID
 	input.Email = email
+
+	// ตรวจรางวัลถ้ามี prize_date
+	if input.PrizeDate != "" {
+		stats, err := h.statisticsRepo.GetAll(c)
+		if err == nil {
+			var stat *models.Statistics
+			for _, s := range stats {
+				if s.Date == input.PrizeDate {
+					stat = &s
+					break
+				}
+			}
+			if stat != nil {
+				prizeType, prizeAmount := checkPrize(input.TicketNumber, stat)
+				input.PrizeType = prizeType
+				input.PrizeAmount = prizeAmount
+				if input.PrizeType == "" {
+					input.PrizeType = "lose"
+				}
+			} else {
+				input.PrizeType = ""
+				input.PrizeAmount = 0
+			}
+		} else {
+			input.PrizeType = ""
+			input.PrizeAmount = 0
+		}
+	} else {
+		input.PrizeType = ""
+		input.PrizeAmount = 0
+	}
+
 	if err := h.repo.Update(input); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update item"})
 		return
@@ -108,4 +175,35 @@ func (h *CollectionHandler) Delete(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Deleted"})
+}
+
+// checkPrize ตรวจสอบรางวัลจากเลขสลากและข้อมูลสถิติ
+func checkPrize(ticketNumber string, stat *models.Statistics) (string, int) {
+	// รางวัลที่ 1
+	if ticketNumber == stat.Prize1 {
+		return "prize1", 6000000
+	}
+	// ข้างเคียงรางวัลที่ 1
+	if n, p := toInt(ticketNumber), toInt(stat.Prize1); n == p+1 || n == p-1 {
+		return "near1", 100000
+	}
+	// สามตัวหน้า
+	if len(ticketNumber) == 6 && (ticketNumber[:3] == stat.First3One || ticketNumber[:3] == stat.First3Two) {
+		return "first3", 4000
+	}
+	// สามตัวท้าย
+	if len(ticketNumber) == 6 && (ticketNumber[3:] == stat.Last3One || ticketNumber[3:] == stat.Last3Two) {
+		return "last3", 4000
+	}
+	// สองตัวท้าย
+	if len(ticketNumber) == 6 && ticketNumber[4:] == stat.Last2 {
+		return "last2", 2000
+	}
+	return "", 0
+}
+
+func toInt(s string) int {
+	var n int
+	_, _ = fmt.Sscanf(s, "%d", &n)
+	return n
 }

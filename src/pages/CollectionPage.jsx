@@ -7,12 +7,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/CollectionPage.css';
 import * as collectionService from '../services/collectionService';
 import { toast } from 'react-toastify';
+import { getAllStatistics } from '../services/statisticsService';
+import Select from 'react-select';
 
 const CollectionPage = () => {
     const { user } = useAuth();
     // State for lottery items
     const [lotteryItems, setLotteryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
+    const [statisticsData, setStatisticsData] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [showClearSearch, setShowClearSearch] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,8 +28,7 @@ const CollectionPage = () => {
     const [addTicketPrice, setAddTicketPrice] = useState(80);
     const [addPurchaseDate, setAddPurchaseDate] = useState(new Date().toISOString().substr(0, 10));
     const [addPrizeStatus, setAddPrizeStatus] = useState('pending');
-    const [addPrizeType, setAddPrizeType] = useState('prize1');
-    const [addWinningNumber, setAddWinningNumber] = useState('');
+    const [addPrizeDate, setAddPrizeDate] = useState('');
     
     // State for edit modal
     const [showEditModal, setShowEditModal] = useState(false);
@@ -36,8 +38,7 @@ const CollectionPage = () => {
     const [editTicketPrice, setEditTicketPrice] = useState(80);
     const [editPurchaseDate, setEditPurchaseDate] = useState('');
     const [editPrizeStatus, setEditPrizeStatus] = useState('pending');
-    const [editPrizeType, setEditPrizeType] = useState('prize1');
-    const [editWinningNumber, setEditWinningNumber] = useState('');
+    const [editPrizeDate, setEditPrizeDate] = useState('');
     
     // State for success and delete modals
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -50,24 +51,23 @@ const CollectionPage = () => {
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [prizeStatusFilters, setPrizeStatusFilters] = useState({
       pending: true,
-      no: true,
-      yes: true
+      announced: true
     });
     const [prizeTypeFilters, setPrizeTypeFilters] = useState({
       prize1: true,
       near1: true,
-      prize2: true,
-      prize3: true,
-      prize4: true,
-      prize5: true,
       first3: true,
       last3: true,
-      last2: true
+      last2: true,
+      lose: true
     });
     
     // State for errors
     const [addErrors, setAddErrors] = useState({});
     const [editErrors, setEditErrors] = useState({});
+    
+    // State for prizeDateList
+    const [prizeDateList, setPrizeDateList] = useState([]);
     
     // Effect to manage body overflow when any modal is open
     useEffect(() => {
@@ -117,7 +117,7 @@ const CollectionPage = () => {
               prizeStatus: item.prizeResult,
               prizeType: item.prizeType,
               prizeAmount: item.prizeAmount,
-              winningNumber: item.ticketWinning || '',
+              prizeDate: item.prize_date || '',
               email: item.email
             }))
             .sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
@@ -125,6 +125,24 @@ const CollectionPage = () => {
         });
       }
     }, [user]);
+    
+    // Load prizeDateList (งวดรางวัล) ครั้งแรก
+    useEffect(() => {
+      getAllStatistics().then(res => {
+        let stats = res;
+        if (res && res.data) stats = res.data;
+        if (!Array.isArray(stats)) stats = [];
+        // sort date ใหม่สุดก่อน
+        stats.sort((a, b) => (b.date > a.date ? 1 : -1));
+        // สร้าง object เก็บข้อมูล statistics โดยใช้ date เป็น key
+        const statsMap = {};
+        stats.forEach(stat => {
+          statsMap[stat.date] = stat;
+        });
+        setStatisticsData(statsMap);
+        setPrizeDateList(stats.map(s => s.date));
+      });
+    }, []);
     
     // Filter items based on search term and filter options
     useEffect(() => {
@@ -137,15 +155,25 @@ const CollectionPage = () => {
         );
       }
       
-      // Apply prize status filters
+      // Apply prize status filters (รองรับ announced)
       filtered = filtered.filter(item => 
         prizeStatusFilters[item.prizeStatus]
       );
       
       // Apply prize type filters for items with prizes
-      filtered = filtered.filter(item => 
-        item.prizeStatus !== 'yes' || prizeTypeFilters[item.prizeType]
-      );
+      filtered = filtered.filter(item => {
+        // ถ้าเป็น announced และมี prizeType
+        if (item.prizeStatus === 'announced' && item.prizeType) {
+          // ถ้า prizeType เป็น lose หรือค่าว่าง ให้เช็ค lose filter
+          if (item.prizeType === 'lose' || !item.prizeType) {
+            return prizeTypeFilters.lose;
+          }
+          // ถ้าเป็นรางวัลอื่นๆ ให้เช็คตาม prizeType
+          return prizeTypeFilters[item.prizeType];
+        }
+        // กรณีอื่นๆ ให้แสดงตามปกติ
+        return true;
+      });
       
       setFilteredItems(filtered);
       setCurrentPage(1); // Reset to first page when filters change
@@ -169,29 +197,8 @@ const CollectionPage = () => {
       const errors = validateAddForm();
       setAddErrors(errors);
       if (Object.keys(errors).length > 0) return;
-      
-      let winningNumberToSave = '';
-      if ((addPrizeStatus === 'yes' || addPrizeStatus === 'no') && addWinningNumber && addWinningNumber.trim() !== '') {
-        winningNumberToSave = addWinningNumber;
-      }
-      
-      // PrizeAmount logic
       let prizeAmount = 0;
-      if (addPrizeStatus === 'yes') {
-        switch (addPrizeType) {
-          case 'prize1': prizeAmount = 6000000; break;
-          case 'near1': prizeAmount = 100000; break;
-          case 'prize2': prizeAmount = 200000; break;
-          case 'prize3': prizeAmount = 80000; break;
-          case 'prize4': prizeAmount = 40000; break;
-          case 'prize5': prizeAmount = 20000; break;
-          case 'first3':
-          case 'last3': prizeAmount = 4000; break;
-          case 'last2': prizeAmount = 2000; break;
-          default: prizeAmount = 0;
-        }
-      }
-
+      // ไม่ต้องคิดรางวัลแล้ว (ไม่มีประเภท)
       try {
         const payload = {
           ticketNumber: addLotteryNumber,
@@ -199,13 +206,10 @@ const CollectionPage = () => {
           ticketAmount: parseInt(addTicketPrice),
           date: addPurchaseDate,
           prizeResult: addPrizeStatus,
-          prizeType: addPrizeStatus === 'yes' ? addPrizeType : '',
-          prizeAmount: prizeAmount,
-          ticketWinning: winningNumberToSave
+          prize_date: addPrizeStatus === 'announced' ? addPrizeDate : '',
+          prizeAmount: prizeAmount
         };
-
         await collectionService.addCollection(payload);
-        
         // Refresh list and sort by date
         const data = await collectionService.getCollection();
         const sortedData = data
@@ -218,11 +222,10 @@ const CollectionPage = () => {
             prizeStatus: item.prizeResult,
             prizeType: item.prizeType,
             prizeAmount: item.prizeAmount,
-            winningNumber: item.ticketWinning || '',
+            prizeDate: item.prize_date || '',
             email: item.email
           }))
           .sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
-        
         setLotteryItems(sortedData);
         resetAddForm();
         setAddErrors({});
@@ -243,8 +246,7 @@ const CollectionPage = () => {
       setAddTicketPrice(80);
       setAddPurchaseDate(new Date().toISOString().substr(0, 10));
       setAddPrizeStatus('pending');
-      setAddPrizeType('prize1');
-      setAddWinningNumber('');
+      setAddPrizeDate('');
     };
     
     // Open edit modal
@@ -257,8 +259,7 @@ const CollectionPage = () => {
         setEditTicketPrice(item.ticketPrice || 80);
         setEditPurchaseDate(item.purchaseDate ? item.purchaseDate.substr(0, 10) : '');
         setEditPrizeStatus(item.prizeStatus);
-        setEditPrizeType(item.prizeType || 'prize1');
-        setEditWinningNumber(item.winningNumber || '');
+        setEditPrizeDate(item.prizeDate || '');
         setShowEditModal(true);
       }
     };
@@ -268,39 +269,18 @@ const CollectionPage = () => {
       const errors = validateEditForm();
       setEditErrors(errors);
       if (Object.keys(errors).length > 0) return;
-      
-      let winningNumberToSave = '';
-      if ((editPrizeStatus === 'yes' || editPrizeStatus === 'no') && editWinningNumber && editWinningNumber.trim() !== '') {
-        winningNumberToSave = editWinningNumber;
-      }
-      
       let prizeAmount = 0;
-      if (editPrizeStatus === 'yes') {
-        switch (editPrizeType) {
-          case 'prize1': prizeAmount = 6000000; break;
-          case 'near1': prizeAmount = 100000; break;
-          case 'prize2': prizeAmount = 200000; break;
-          case 'prize3': prizeAmount = 80000; break;
-          case 'prize4': prizeAmount = 40000; break;
-          case 'prize5': prizeAmount = 20000; break;
-          case 'first3':
-          case 'last3': prizeAmount = 4000; break;
-          case 'last2': prizeAmount = 2000; break;
-          default: prizeAmount = 0;
-        }
-      }
-      const payload = {
-        ticketNumber: editLotteryNumber,
-        ticketQuantity: parseInt(editTicketCount),
-        ticketAmount: parseInt(editTicketPrice),
-        date: editPurchaseDate,
-        prizeResult: editPrizeStatus,
-        prizeType: editPrizeStatus === 'yes' ? editPrizeType : '',
-        prizeAmount,
-        ticketWinning: winningNumberToSave,
-        email: user.email
-      };
       try {
+        const payload = {
+          ticketNumber: editLotteryNumber,
+          ticketQuantity: parseInt(editTicketCount),
+          ticketAmount: parseInt(editTicketPrice),
+          date: editPurchaseDate,
+          prizeResult: editPrizeStatus,
+          prize_date: editPrizeStatus === 'announced' ? editPrizeDate : '',
+          prizeAmount: prizeAmount,
+          email: user.email
+        };
         await collectionService.updateCollection(editItemId, payload);
         // Refresh list and sort by date
         const data = await collectionService.getCollection();
@@ -314,11 +294,10 @@ const CollectionPage = () => {
             prizeStatus: item.prizeResult,
             prizeType: item.prizeType,
             prizeAmount: item.prizeAmount,
-            winningNumber: item.ticketWinning || '',
+            prizeDate: item.prize_date || '',
             email: item.email
           }))
           .sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
-        
         setLotteryItems(sortedData);
         setEditErrors({});
         setShowEditModal(false);
@@ -361,20 +340,16 @@ const CollectionPage = () => {
     const handleResetFilter = () => {
       setPrizeStatusFilters({
         pending: true,
-        no: true,
-        yes: true
+        announced: true
       });
       
       setPrizeTypeFilters({
         prize1: true,
         near1: true,
-        prize2: true,
-        prize3: true,
-        prize4: true,
-        prize5: true,
         first3: true,
         last3: true,
-        last2: true
+        last2: true,
+        lose: true
       });
     };
     
@@ -537,8 +512,7 @@ const CollectionPage = () => {
     const translatePrizeStatus = (status) => {
       switch (status) {
         case 'pending': return 'ยังไม่ประกาศรางวัล';
-        case 'no': return 'ไม่ถูกรางวัล';
-        case 'yes': return 'ถูกรางวัล';
+        case 'announced': return 'ประกาศแล้ว';
         default: return status;
       }
     };
@@ -546,15 +520,12 @@ const CollectionPage = () => {
     // Translate prize type to Thai
     const translatePrizeType = (type) => {
       switch (type) {
-        case 'prize1': return 'รางวัลที่ 1';
-        case 'near1': return 'รางวัลข้างเคียงที่ 1';
-        case 'prize2': return 'รางวัลที่ 2';
-        case 'prize3': return 'รางวัลที่ 3';
-        case 'prize4': return 'รางวัลที่ 4';
-        case 'prize5': return 'รางวัลที่ 5';
+        case 'prize1': return 'ที่ 1';
+        case 'near1': return 'ข้างเคียงที่ 1';
         case 'first3': return 'สามตัวหน้า';
         case 'last3': return 'สามตัวท้าย';
         case 'last2': return 'สองตัวท้าย';
+        case 'lose': return 'ไม่ถูกรางวัล';
         default: return '';
       }
     };
@@ -575,8 +546,11 @@ const CollectionPage = () => {
     };
     
     // Add these helper functions after the existing helper functions
-    const calculateSimilarity = (lotteryNumber, winningNumber) => {
-      if (!lotteryNumber || !winningNumber || lotteryNumber.length !== 6 || winningNumber.length !== 6) return 0;
+    const calculateSimilarity = (lotteryNumber, prizeDate) => {
+      if (!lotteryNumber || !prizeDate || lotteryNumber.length !== 6) return 0;
+      const stat = statisticsData[prizeDate];
+      if (!stat || !stat.prize1) return 0;
+      const winningNumber = stat.prize1;
       let matches = 0;
       for (let i = 0; i < 6; i++) {
         if (lotteryNumber[i] === winningNumber[i]) {
@@ -586,9 +560,9 @@ const CollectionPage = () => {
       return Math.round((matches / 6) * 100);
     };
     
-    const getSimilarityText = (lotteryNumber, winningNumber) => {
-      if (!winningNumber || winningNumber.length !== 6) return '';
-      const similarity = calculateSimilarity(lotteryNumber, winningNumber);
+    const getSimilarityText = (lotteryNumber, prizeDate) => {
+      if (!prizeDate) return '';
+      const similarity = calculateSimilarity(lotteryNumber, prizeDate);
       return `ใกล้เคียงกับรางวัลที่ 1 : ${similarity}%`;
     };
     
@@ -601,8 +575,8 @@ const CollectionPage = () => {
       if (!addTicketCount || isNaN(addTicketCount) || parseInt(addTicketCount) < 1) {
         errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
-      if (addWinningNumber && !/^\d{6}$/.test(addWinningNumber)) {
-        errors.winningNumber = 'กรอกเลขสลาก 6 หลักที่ถูกรางวัล';
+      if (addPrizeStatus === 'announced' && !addPrizeDate) {
+        errors.prizeDate = 'กรุณาเลือกงวดรางวัล';
       }
       return errors;
     };
@@ -616,14 +590,29 @@ const CollectionPage = () => {
       if (!editTicketCount || isNaN(editTicketCount) || parseInt(editTicketCount) < 1) {
         errors.ticketCount = 'กรอกจำนวนที่ซื้ออย่างน้อย 1 ใบ';
       }
-      if (editWinningNumber && !/^\d{6}$/.test(editWinningNumber)) {
-        errors.winningNumber = 'กรอกเลขสลาก 6 หลักที่ถูกรางวัล';
+      if (editPrizeStatus === 'announced' && !editPrizeDate) {
+        errors.prizeDate = 'กรุณาเลือกงวดรางวัล';
       }
       return errors;
     };
     
     // --- Filter Modal prize type visibility ---
-    const showPrizeTypeFilter = prizeStatusFilters.yes;
+    const showPrizeTypeFilter = prizeStatusFilters.announced;
+
+    // --- helper สำหรับแปลงวันที่ไทย ---
+    function formatThaiDate(dateStr) {
+      if (!dateStr) return '';
+      const months = [
+        '', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+        'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+      ];
+      const [y, m, d] = dateStr.split('-');
+      if (!y || !m || !d) return dateStr;
+      const day = parseInt(d, 10);
+      const month = months[parseInt(m, 10)];
+      const year = parseInt(y, 10) + 543;
+      return `${day} ${month} ${year}`;
+    }
 
     return (
       <div className="container-fluid">
@@ -688,38 +677,50 @@ const CollectionPage = () => {
               
               {/* Collection Items */}
               {currentItems.map(item => (
-                            <div key={item.id} className="collection-item">
-                  <div className={`left-collection ${item.prizeStatus === 'yes' ? 'has-prize' : item.prizeStatus === 'no' ? 'no-prize' : ''}`}></div>
-                                <div className="middle-collection">
+                <div key={item.id} className="collection-item">
+                  <div className={`left-collection ${
+                    item.prizeStatus === 'yes' ? 'has-prize' : 
+                    (item.prizeStatus === 'no' || item.prizeType === 'lose' || (item.prizeStatus === 'announced' && !item.prizeType)) ? 'no-prize' : 
+                    item.prizeStatus === 'announced' ? 'announced' : ''
+                  }`}></div>
+                  <div className="middle-collection">
                     <h2 className="lottery-number">เลข {item.lotteryNumber}</h2>
-                                    <div className="lottery-details">
-                                        <div className="detail-box ticket-count-box">
+                    <div className="lottery-details">
+                      <div className="detail-box ticket-count-box">
                         <div className="ticket-count">จำนวน {item.ticketCount} ใบ (฿{item.ticketPrice}/ใบ)</div>
-                                        </div>
-                                        <div className="detail-box prize-status-box">
+                      </div>
+                      <div className="detail-box prize-status-box">
                         <div className="prize-status">
-                          {translatePrizeStatus(item.prizeStatus)}
-                          {item.prizeStatus === 'yes' && item.prizeType && ` (${translatePrizeType(item.prizeType)})`}
+                          {item.prizeStatus === 'announced' && item.prizeDate
+                            ? (<>
+                               {(!item.prizeType || item.prizeType === 'lose') ? 'ไม่ถูกรางวัล' : `ถูกรางวัล${translatePrizeType(item.prizeType)}`}
+                              </>)
+                            : item.prizeStatus === 'announced'
+                              ? (<>ประกาศแล้ว{item.prizeDate ? <span> งวดวันที่ {formatThaiDate(item.prizeDate)}</span> : ' (ยังไม่ได้เลือกงวด)'}</>)
+                              : translatePrizeStatus(item.prizeStatus)
+                          }
                         </div>
-                                        </div>
-                      {item.winningNumber && item.winningNumber.length === 6 && (
-                                            <div className="detail-box similarity-box has-similarity">
-                          <div className="similarity">{getSimilarityText(item.lotteryNumber, item.winningNumber)}</div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="right-collection">
-                                    <div className="collection-actions">
+                      </div>
+                      {item.prizeStatus === 'announced' && item.prizeDate && item.prizeType !== 'prize1' && getSimilarityText(item.lotteryNumber, item.prizeDate) && (
+                        <div className="detail-box similarity-box">
+                          <div className="similarity">
+                            {getSimilarityText(item.lotteryNumber, item.prizeDate)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="right-collection">
+                    <div className="collection-actions">
                       <button className="btn-edit" onClick={() => handleEdit(item.id)}>
-                                            <FaEdit />
-                                        </button>
+                        <FaEdit />
+                      </button>
                       <button className="btn-delete" onClick={() => handleDeleteConfirm(item.id)}>
-                                            <FaTrash />
-                                        </button>
-                                    </div>
+                        <FaTrash />
+                      </button>
+                    </div>
                     <div className="collection-date">{formatDate(item.purchaseDate)}</div>
-                        </div>
+                  </div>
                 </div>
               ))}
                 </div>
@@ -805,50 +806,74 @@ const CollectionPage = () => {
                   value={addPrizeStatus} 
                   onChange={e => setAddPrizeStatus(e.target.value)}
                 >
-                  <option value="pending">ยังไม่ประกาศรางวัล</option>
-                  <option value="no">ไม่ถูกรางวัล</option>
-                  <option value="yes">ถูกรางวัล</option>
+                  <option value="pending">ยังไม่ประกาศ</option>
+                  <option value="announced">ประกาศแล้ว</option>
                 </select>
               </div>
-              {addPrizeStatus === 'yes' && (
+              {addPrizeStatus === 'announced' && (
                 <div className="mb-3">
-                  <label htmlFor="addPrizeType" className="form-label">ประเภทรางวัล</label>
-                                        <select
-                                            className="form-select"
-                    id="addPrizeType" 
-                    value={addPrizeType} 
-                    onChange={e => setAddPrizeType(e.target.value)}
-                  >
-                    <option value="prize1">รางวัลที่ 1</option>
-                    <option value="near1">รางวัลข้างเคียงที่ 1</option>
-                    <option value="prize2">รางวัลที่ 2</option>
-                    <option value="prize3">รางวัลที่ 3</option>
-                    <option value="prize4">รางวัลที่ 4</option>
-                    <option value="prize5">รางวัลที่ 5</option>
-                    <option value="first3">สามตัวหน้า</option>
-                    <option value="last3">สามตัวท้าย</option>
-                    <option value="last2">สองตัวท้าย</option>
-                                        </select>
-                                    </div>
-              )}
-              {(addPrizeStatus === 'yes' || addPrizeStatus === 'no') && (
-                                    <div className="mb-3">
-                  <label htmlFor="addWinningNumber" className="form-label">เลขที่ถูกรางวัลที่ 1 (ไม่บังคับ)</label>
-                                        <input
-                                            type="text"
-                    className={`form-control${addErrors.winningNumber ? ' is-invalid' : ''}`} 
-                    id="addWinningNumber" 
-                    maxLength="6" 
-                    value={addWinningNumber} 
-                    onChange={e => setAddWinningNumber(e.target.value.replace(/\D/g, '').slice(0,6))}
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
+                  <label htmlFor="addPrizeDate" className="form-label">เลือกงวดรางวัล</label>
+                  <Select
+                    id="addPrizeDate"
+                    value={prizeDateList.find(d => d === addPrizeDate) ? { value: addPrizeDate, label: `งวดวันที่ ${formatThaiDate(addPrizeDate)}` } : null}
+                    onChange={opt => setAddPrizeDate(opt.value)}
+                    options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
+                    placeholder="เลือกงวด"
+                    className={addErrors.prizeDate ? 'is-invalid' : ''}
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        backgroundColor: '#1a1a1a',
+                        borderColor: '#FFD700',
+                        color: '#fff',
+                        fontWeight: 'normal',
+                        fontSize: '1rem',
+                        borderRadius: '8px',
+                        minHeight: '38px',
+                        boxShadow: 'none',
+                        paddingTop: '5px',
+                        paddingBottom: '5px',
+                        borderRight: 'none',
+                        '&:hover': { borderColor: '#FFD700' }
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: '#232323',
+                        color: '#fff',
+                        border: '1px solid #FFD700',
+                        borderRadius: '8px',
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected
+                          ? '#FFD700'
+                          : state.isFocused
+                            ? '#444'
+                            : '#232323',
+                        color: state.isSelected
+                          ? '#232323'
+                          : '#fff',
+                        fontWeight: state.isSelected ? 'bold' : 'normal',
+                      }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: '#fff',
+                        fontWeight: 'normal',
+                      }),
+                      dropdownIndicator: (base, state) => ({
+                        ...base,
+                        color: '#fff',
+                      }),
+                      indicatorSeparator: (base) => ({
+                        ...base,
+                        backgroundColor: 'transparent',
+                      }),
+                    }}
+                    isSearchable={false}
                   />
-                  {addErrors.winningNumber && <div className="invalid-feedback" style={{display:'block'}}>{addErrors.winningNumber}</div>}
+                  {addErrors.prizeDate && <div className="invalid-feedback" style={{display:'block'}}>{addErrors.prizeDate}</div>}
                 </div>
-            )}
+              )}
             </form>
           </Modal.Body>
           <Modal.Footer>
@@ -931,48 +956,72 @@ const CollectionPage = () => {
                                             value={editPrizeStatus} 
                                             onChange={e => setEditPrizeStatus(e.target.value)}
                                         >
-                                            <option value="pending">ยังไม่ประกาศรางวัล</option>
-                                            <option value="no">ไม่ถูกรางวัล</option>
-                                            <option value="yes">ถูกรางวัล</option>
+                                            <option value="pending">ยังไม่ประกาศ</option>
+                                            <option value="announced">ประกาศแล้ว</option>
                                         </select>
                                     </div>
-                                    {editPrizeStatus === 'yes' && (
+                                    {editPrizeStatus === 'announced' && (
                                         <div className="mb-3">
-                                            <label htmlFor="editPrizeType" className="form-label">ประเภทรางวัล</label>
-                                            <select 
-                                                className="form-select" 
-                                                id="editPrizeType" 
-                                                value={editPrizeType} 
-                                                onChange={e => setEditPrizeType(e.target.value)}
-                                            >
-                                                <option value="prize1">รางวัลที่ 1</option>
-                                                <option value="near1">รางวัลข้างเคียงที่ 1</option>
-                                                <option value="prize2">รางวัลที่ 2</option>
-                                                <option value="prize3">รางวัลที่ 3</option>
-                                                <option value="prize4">รางวัลที่ 4</option>
-                                                <option value="prize5">รางวัลที่ 5</option>
-                                                <option value="first3">สามตัวหน้า</option>
-                                                <option value="last3">สามตัวท้าย</option>
-                                                <option value="last2">สองตัวท้าย</option>
-                                            </select>
-                                        </div>
-                                    )}
-                                    {(editPrizeStatus === 'yes' || editPrizeStatus === 'no') && (
-                                        <div className="mb-3">
-                                            <label htmlFor="editWinningNumber" className="form-label">เลขที่ถูกรางวัลที่ 1 (ไม่บังคับ)</label>
-                                            <input
-                                                type="text"
-                                                className={`form-control${editErrors.winningNumber ? ' is-invalid' : ''}`} 
-                                                id="editWinningNumber" 
-                                                maxLength="6" 
-                                                value={editWinningNumber} 
-                                                onChange={e => setEditWinningNumber(e.target.value.replace(/\D/g, '').slice(0,6))}
-                                                autoComplete="off"
-                                                autoCorrect="off"
-                                                autoCapitalize="off"
-                                                spellCheck="false"
+                                            <label htmlFor="editPrizeDate" className="form-label">เลือกงวดรางวัล</label>
+                                            <Select
+                                                id="editPrizeDate"
+                                                value={prizeDateList.find(d => d === editPrizeDate) ? { value: editPrizeDate, label: `งวดวันที่ ${formatThaiDate(editPrizeDate)}` } : null}
+                                                onChange={opt => setEditPrizeDate(opt.value)}
+                                                options={prizeDateList.map(date => ({ value: date, label: `งวดวันที่ ${formatThaiDate(date)}` }))}
+                                                placeholder="เลือกงวด"
+                                                className={editErrors.prizeDate ? 'is-invalid' : ''}
+                                                styles={{
+                                                    control: (base, state) => ({
+                                                        ...base,
+                                                        backgroundColor: '#1a1a1a',
+                                                        borderColor: '#FFD700',
+                                                        color: '#fff',
+                                                        fontWeight: 'normal',
+                                                        fontSize: '1rem',
+                                                        borderRadius: '8px',
+                                                        minHeight: '38px',
+                                                        boxShadow: 'none',
+                                                        paddingTop: '5px',
+                                                        paddingBottom: '5px',
+                                                        borderRight: 'none',
+                                                        '&:hover': { borderColor: '#FFD700' }
+                                                    }),
+                                                    menu: (base) => ({
+                                                        ...base,
+                                                        backgroundColor: '#232323',
+                                                        color: '#fff',
+                                                        border: '1px solid #FFD700',
+                                                        borderRadius: '8px',
+                                                    }),
+                                                    option: (base, state) => ({
+                                                        ...base,
+                                                        backgroundColor: state.isSelected
+                                                          ? '#FFD700'
+                                                          : state.isFocused
+                                                            ? '#444'
+                                                            : '#232323',
+                                                        color: state.isSelected
+                                                          ? '#232323'
+                                                          : '#fff',
+                                                        fontWeight: state.isSelected ? 'bold' : 'normal',
+                                                    }),
+                                                    singleValue: (base) => ({
+                                                        ...base,
+                                                        color: '#fff',
+                                                        fontWeight: 'normal',
+                                                    }),
+                                                    dropdownIndicator: (base, state) => ({
+                                                        ...base,
+                                                        color: '#fff',
+                                                    }),
+                                                    indicatorSeparator: (base) => ({
+                                                        ...base,
+                                                        backgroundColor: 'transparent',
+                                                    }),
+                                                }}
+                                                isSearchable={false}
                                             />
-                                            {editErrors.winningNumber && <div className="invalid-feedback" style={{display:'block'}}>{editErrors.winningNumber}</div>}
+                                            {editErrors.prizeDate && <div className="invalid-feedback" style={{display:'block'}}>{editErrors.prizeDate}</div>}
                                         </div>
                                     )}
                                 </form>
@@ -1081,42 +1130,30 @@ const CollectionPage = () => {
                     <label className="form-check-label" htmlFor="filterPending">
                       ยังไม่ประกาศรางวัล
                     </label>
-                            </div>
+                  </div>
                   <div className="form-check">
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      id="filterNo"
-                      checked={prizeStatusFilters.no}
-                      onChange={() => handlePrizeStatusFilterChange('no')}
+                      id="filterAnnounced"
+                      checked={prizeStatusFilters.announced}
+                      onChange={() => handlePrizeStatusFilterChange('announced')}
                     />
-                    <label className="form-check-label" htmlFor="filterNo">
-                      ไม่ถูกรางวัล
+                    <label className="form-check-label" htmlFor="filterAnnounced">
+                      ประกาศแล้ว
                     </label>
-                        </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="filterYes"
-                      checked={prizeStatusFilters.yes}
-                      onChange={() => handlePrizeStatusFilterChange('yes')}
-                    />
-                    <label className="form-check-label" htmlFor="filterYes">
-                      ถูกรางวัล
-                    </label>
-                    </div>
+                  </div>
                 </div>
-                            </div>
+              </div>
               {/* Prize Type Filter */}
               {showPrizeTypeFilter && (
                 <div className="mb-3">
                   <label className="form-label">ประเภทรางวัล</label>
-                                <div className="filter-options">
-                                    <div className="form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
+                  <div className="filter-options">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
                         id="filterPrize1"
                         checked={prizeTypeFilters.prize1}
                         onChange={() => handlePrizeTypeFilterChange('prize1')}
@@ -1134,57 +1171,9 @@ const CollectionPage = () => {
                         onChange={() => handlePrizeTypeFilterChange('near1')}
                       />
                       <label className="form-check-label" htmlFor="filterNear1">
-                        รางวัลข้างเคียงที่ 1
-                                        </label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                        id="filterPrize2"
-                        checked={prizeTypeFilters.prize2}
-                        onChange={() => handlePrizeTypeFilterChange('prize2')}
-                      />
-                      <label className="form-check-label" htmlFor="filterPrize2">
-                        รางวัลที่ 2
-                                        </label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                        id="filterPrize3"
-                        checked={prizeTypeFilters.prize3}
-                        onChange={() => handlePrizeTypeFilterChange('prize3')}
-                      />
-                      <label className="form-check-label" htmlFor="filterPrize3">
-                        รางวัลที่ 3
-                                        </label>
-                                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="filterPrize4"
-                        checked={prizeTypeFilters.prize4}
-                        onChange={() => handlePrizeTypeFilterChange('prize4')}
-                      />
-                      <label className="form-check-label" htmlFor="filterPrize4">
-                        รางวัลที่ 4
+                        ข้างเคียงที่ 1
                       </label>
-                                </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="filterPrize5"
-                        checked={prizeTypeFilters.prize5}
-                        onChange={() => handlePrizeTypeFilterChange('prize5')}
-                      />
-                      <label className="form-check-label" htmlFor="filterPrize5">
-                        รางวัลที่ 5
-                      </label>
-                            </div>
+                    </div>
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -1196,7 +1185,7 @@ const CollectionPage = () => {
                       <label className="form-check-label" htmlFor="filterFirst3">
                         สามตัวหน้า
                       </label>
-                            </div>
+                    </div>
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -1220,10 +1209,22 @@ const CollectionPage = () => {
                       <label className="form-check-label" htmlFor="filterLast2">
                         สองตัวท้าย
                       </label>
-                        </div>
                     </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="filterLose"
+                        checked={prizeTypeFilters.lose}
+                        onChange={() => handlePrizeTypeFilterChange('lose')}
+                      />
+                      <label className="form-check-label" htmlFor="filterLose">
+                        ไม่ถูกรางวัล
+                      </label>
+                    </div>
+                  </div>
                 </div>
-            )}
+              )}
             </form>
           </Modal.Body>
           <Modal.Footer>

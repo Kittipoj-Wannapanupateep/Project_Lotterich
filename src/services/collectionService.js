@@ -30,9 +30,10 @@ export const addCollection = async (data) => {
     ticketAmount: parseInt(data.ticketAmount),
     date: new Date(data.date).toISOString(), // Format date to ISO string
     prizeResult: data.prizeResult,
-    prizeType: data.prizeResult === 'yes' ? data.prizeType : '',
+    prize_date: data.prize_date || '',
+    prizeType: '',
     prizeAmount: parseInt(data.prizeAmount) || 0,
-    ticketWinning: data.ticketWinning && data.ticketWinning.trim() !== '' ? data.ticketWinning : ''
+    ticketWinning: ''
   }
   const res = await api.post('/collection', formattedData)
   return res.data
@@ -46,9 +47,10 @@ export const updateCollection = async (id, data) => {
     ticketAmount: parseInt(data.ticketAmount),
     date: new Date(data.date).toISOString(), // Format date to ISO string
     prizeResult: data.prizeResult,
-    prizeType: data.prizeResult === 'yes' ? data.prizeType : '',
+    prize_date: data.prize_date || '',
+    prizeType: '',
     prizeAmount: parseInt(data.prizeAmount) || 0,
-    ticketWinning: data.ticketWinning && data.ticketWinning.trim() !== '' ? data.ticketWinning : ''
+    ticketWinning: ''
   }
   const res = await api.put(`/collection/${id}`, formattedData)
   return res.data

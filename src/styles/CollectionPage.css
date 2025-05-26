@@ -164,16 +164,20 @@
 }
 
 .left-collection {
-    width: 20px;
-    background-color: #6e6e6e;
+    width: 8px;
+    border-radius: 4px 0 0 4px;
 }
 
 .left-collection.has-prize {
-    background-color: #FFD700;
+    background-color: #ffd700;
 }
 
 .left-collection.no-prize {
-    background-color: #FF4444;
+    background-color: #ff4444;
+}
+
+.left-collection.announced {
+    background-color: #ffd700;
 }
 
 .middle-collection {
@@ -227,12 +231,11 @@
 
 .similarity-box {
     background-color: #333333;
-    border: 1.5px solid #FFD700;
+    border: 1px solid #FFD700;
     border-radius: 4px;
     padding: 0.5rem 1rem;
     min-width: 120px;
     margin: 0;
-    display: none;
     text-align: center;
     font-size: 0.9rem;
     font-weight: 500;
@@ -241,9 +244,10 @@
     height: auto;
     align-items: center;
     justify-content: center;
+    display: none;
 }
 
-.similarity-box.has-similarity {
+.similarity-box:not(:empty) {
     display: block;
 }
 

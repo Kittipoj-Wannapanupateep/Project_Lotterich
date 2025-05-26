@@ -363,8 +363,14 @@ const StatisticsPage = () => {
                         }),
                         option: (base, state) => ({
                           ...base,
-                          backgroundColor: state.isFocused ? '#FFD700' : '#2a2a2a',
-                          color: state.isFocused ? '#2a2a2a' : '#FFD700',
+                          backgroundColor: state.isSelected
+                            ? '#FFD700'
+                            : state.isFocused
+                              ? '#444'
+                              : '#2a2a2a',
+                          color: state.isSelected
+                            ? '#232323'
+                            : '#fff',
                           fontWeight: state.isSelected ? 'bold' : 'normal',
                         }),
                         singleValue: (base) => ({

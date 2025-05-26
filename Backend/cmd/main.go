@@ -77,7 +77,7 @@ func main() {
 
 	// Create handlers
 	authHandler := handlers.NewAuthHandler(userRepo, collectionRepo, otpRepo)
-	collectionHandler := handlers.NewCollectionHandler(collectionRepo)
+	collectionHandler := handlers.NewCollectionHandler(collectionRepo, statisticsRepo)
 	statisticsHandler := handlers.NewStatisticsHandler(statisticsRepo)
 
 	// Setup routes

@@ -83,7 +83,7 @@ const OverviewPage = () => {
                     if (spendingMap[key] !== undefined) {
                         spendingMap[key] += item.ticketQuantity * item.ticketAmount;
                     }
-                    if (item.prizeResult === 'yes') {
+                    if (item.prizeType && item.prizeAmount > 0) {
                         totalWins += 1;
                         totalPrize += item.prizeAmount * item.ticketQuantity;
                         if (!lastWinning || new Date(item.date) > new Date(lastWinning.date)) {
@@ -91,7 +91,7 @@ const OverviewPage = () => {
                         }
                         countWin += 1;
                         countValid += 1;
-                    } else if (item.prizeResult === 'no') {
+                    } else if (item.prizeType === '' || !item.prizeType) {
                         countLose += 1;
                         countValid += 1;
                     }
