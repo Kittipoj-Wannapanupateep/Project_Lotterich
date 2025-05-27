@@ -18,9 +18,9 @@ type OTPRepository struct {
 func NewOTPRepository(db *mongo.Database) *OTPRepository {
 	collection := db.Collection("otp")
 
-	// Drop existing TTL index if exists
+	// Drop existing TTL index if exists (ignore error if ns not found)
 	_, err := collection.Indexes().DropOne(context.Background(), "date_otp_1")
-	if err != nil && !strings.Contains(err.Error(), "ns does not exist") {
+	if err != nil && !strings.Contains(err.Error(), "ns does not exist") && !strings.Contains(err.Error(), "NamespaceNotFound") {
 		panic(err)
 	}
 
