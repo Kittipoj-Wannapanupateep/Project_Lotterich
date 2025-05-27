@@ -187,16 +187,12 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    position: relative;
 }
 
 .prize-draw-date-top {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.8rem;
-    color: #ffd700;
-    font-size: 0.8rem;
+    font-size: 1rem;
     z-index: 2;
+    margin-bottom: 10px;
 }
 
 .lottery-number {
@@ -204,7 +200,7 @@
     font-weight: bold;
     color: #ffffff;
     text-align: center;
-    margin: 1rem 0;
+    margin-top: 1rem;
 }
 
 .lottery-details {
@@ -221,7 +217,7 @@
     background-color: #333333;
     border: 1px solid #FFD700;
     border-radius: 4px;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     min-width: 120px;
     text-align: center;
     transition: all 0.3s ease;
@@ -244,7 +240,6 @@
     background-color: #333333;
     border: 1px solid #FFD700;
     border-radius: 4px;
-    padding: 0.5rem 1rem;
     min-width: 120px;
     margin: 0;
     text-align: center;
@@ -431,8 +426,6 @@
     }
 
     .btn-edit, .btn-delete {
-        width: 120px;
-        height: 40px;
         font-size: 1rem;
     }
 
@@ -1182,4 +1175,50 @@ input:-webkit-autofill:active {
 #addWinningNumber::-webkit-credentials-auto-fill-button,
 #editWinningNumber::-webkit-credentials-auto-fill-button {
     display: none !important;
+}
+
+/* Export Modal Styles */
+.export-modal .modal-content {
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid #FFD700;
+}
+
+.export-modal .modal-header {
+  border-bottom: 1px solid #FFD700;
+}
+
+.export-modal .modal-title {
+  color: #FFD700;
+}
+
+.export-modal .modal-body {
+  padding: 2rem;
+}
+
+.export-option-btn {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFD700 !important;
+  color: #FFD700 !important;
+  background-color: transparent !important;
+  transition: all 0.3s ease;
+}
+
+.export-option-btn:hover {
+  background-color: #FFD700 !important;
+  color: #1a1a1a !important;
+}
+
+.export-option-btn svg {
+  margin-bottom: 0.5rem;
+}
+
+.export-option-btn div {
+  font-size: 1.2rem;
+  font-weight: 500;
 }

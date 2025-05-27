@@ -9,6 +9,8 @@ import * as collectionService from '../services/collectionService';
 import { toast } from 'react-toastify';
 import { getAllStatistics } from '../services/statisticsService';
 import Select from 'react-select';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const CollectionPage = () => {
     const { user } = useAuth();
@@ -69,6 +71,9 @@ const CollectionPage = () => {
     // State for prizeDateList
     const [prizeDateList, setPrizeDateList] = useState([]);
     
+    // State for export format selection modal
+    const [showExportModal, setShowExportModal] = useState(false);
+    
     // Effect to manage body overflow when any modal is open
     useEffect(() => {
       if (
@@ -77,7 +82,8 @@ const CollectionPage = () => {
         showDeleteConfirmModal ||
         showDeleteSuccessModal ||
         showSuccessModal ||
-        showFilterModal
+        showFilterModal ||
+        showExportModal
       ) {
         document.body.style.overflow = 'hidden';
       } else {
@@ -93,6 +99,7 @@ const CollectionPage = () => {
       showDeleteSuccessModal,
       showSuccessModal,
       showFilterModal,
+      showExportModal
     ]);
     
     // Function to scroll to top
@@ -353,10 +360,15 @@ const CollectionPage = () => {
       });
     };
     
-    // Export data
+    // Modify export function to only handle CSV for now
     const handleExport = () => {
+      if (filteredItems.length === 0) {
+        toast.error('ขณะนี้ยังไม่มีข้อมูลในระบบ');
+        return;
+      }
       const csv = convertToCSVForExport(filteredItems);
       downloadCSV(csv);
+      toast.success('ส่งออกไฟล์ CSV สำเร็จ');
     };
     
     // Calculate pagination
@@ -613,6 +625,18 @@ const CollectionPage = () => {
       return `${day} ${month} ${year}`;
     }
 
+    // --- helper สำหรับแปลงวันที่ไทยแบบตัวเลขล้วนสำหรับ PDF ---
+    function formatThaiDateForPDF(dateStr) {
+      if (!dateStr) return '';
+      // Support both ISO and yyyy-mm-dd
+      const dateObj = new Date(dateStr);
+      if (isNaN(dateObj.getTime())) return dateStr;
+      const pdfDay = dateObj.getDate().toString().padStart(2, '0');
+      const pdfMonth = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+      const pdfYear = (dateObj.getFullYear() + 543).toString();
+      return `${pdfDay}/${pdfMonth}/${pdfYear}`;
+    }
+
     // ฟังก์ชันแปลงข้อมูลเป็น CSV ตามฟอร์แมตที่ต้องการ
     function convertToCSVForExport(data) {
       const header = [
@@ -653,15 +677,18 @@ const CollectionPage = () => {
           default:
             prizeTypeTh = item.prizeType;
         }
+        // Format dates to Thai style (d/m/yyyy+543)
+        const purchaseDateFormatted = formatThaiDate(item.purchaseDate);
+        const prizeDateFormatted = item.prizeDate ? formatThaiDate(item.prizeDate) : '-';
         return [
-          item.purchaseDate,
+          purchaseDateFormatted,
           item.lotteryNumber,
           item.ticketCount,
           item.ticketPrice,
           prizeStatusTh,
           prizeTypeTh,
-          item.prizeAmount,
-          item.prizeDate,
+          item.prizeAmount || 0,
+          prizeDateFormatted,
           expense,
           net
         ];
@@ -684,6 +711,122 @@ const CollectionPage = () => {
         document.body.removeChild(link);
       }
     }
+
+    // Add PDF export function
+    const handlePDFExport = () => {
+      if (filteredItems.length === 0) {
+        toast.error('ขณะนี้ยังไม่มีข้อมูลในระบบ');
+        return;
+      }
+      try {
+        // Create new PDF document with Thai font support
+        const doc = new jsPDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        // Add title
+        doc.setFontSize(20);
+        doc.text('My Collection - Lotterich', 14, 15);
+        
+        // Add date
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString('th-TH')}`, 14, 25);
+        
+        // Prepare table data - Sort by purchase date ascending (oldest first)
+        const tableData = [...filteredItems]
+          .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate))
+          .map(item => {
+            const expense = item.ticketCount * item.ticketPrice;
+            const net = (item.prizeAmount || 0) - expense;
+            // Translate prize status
+            let prizeStatusTh = '';
+            if (item.prizeStatus === 'pending') prizeStatusTh = 'Pending';
+            else if (item.prizeStatus === 'announced') prizeStatusTh = 'Announced';
+            else prizeStatusTh = item.prizeStatus || '';
+            // Translate prize type
+            let prizeTypeTh = '';
+            switch (item.prizeType) {
+              case 'prize1': prizeTypeTh = 'First Prize'; break;
+              case 'near1': prizeTypeTh = 'Adjacent Number to First Prize'; break;
+              case 'first3': prizeTypeTh = 'Three-Digit Front Prize'; break;
+              case 'last3': prizeTypeTh = 'Three-Digit Back Prize'; break;
+              case 'last2': prizeTypeTh = 'Two-Digit Back Prize'; break;
+              case 'lose':
+              case '':
+              case undefined:
+                prizeTypeTh = 'No Prize';
+                break;
+              default:
+                prizeTypeTh = item.prizeType;
+            }
+            // Format dates to dd/mm/yyyy (Buddhist year) for PDF
+            const purchaseDateFormatted = formatThaiDateForPDF(item.purchaseDate);
+            const prizeDateFormatted = item.prizeDate ? formatThaiDateForPDF(item.prizeDate) : '-';
+            return [
+              purchaseDateFormatted,
+              item.lotteryNumber,
+              item.ticketCount,
+              item.ticketPrice,
+              prizeStatusTh,
+              prizeTypeTh,
+              item.prizeAmount || 0,
+              prizeDateFormatted,
+              expense,
+              net
+            ];
+          });
+
+        // Define column widths
+        const columnStyles = {
+          0: { cellWidth: 25 }, // วันที่ซื้อ
+          1: { cellWidth: 20 }, // เลขที่ซื้อ
+          2: { cellWidth: 15 }, // จำนวน
+          3: { cellWidth: 15 }, // ราคา/ใบ
+          4: { cellWidth: 30 }, // สถานะ
+          5: { cellWidth: 30 }, // ประเภท
+          6: { cellWidth: 20 }, // รางวัล
+          7: { cellWidth: 25 }, // งวด
+          8: { cellWidth: 20 }, // รายจ่าย
+          9: { cellWidth: 20 }  // สุทธิ
+        };
+        
+        // Add table
+        autoTable(doc, {
+          head: [['Purchase Date', 'Ticket Number', 'Ticket Quantity', 'Price per Ticket', 'Status', 'Prize Type', 'Prize Amount', 'Prize Date', 'Total Cost', 'Net Profit']],
+          body: tableData,
+          startY: 35,
+          theme: 'grid',
+          styles: {
+            fontSize: 10,
+            cellPadding: 3,
+            overflow: 'linebreak',
+            halign: 'center'
+          },
+          columnStyles: columnStyles,
+          headStyles: {
+            fillColor: [255, 215, 0],
+            textColor: [0, 0, 0],
+            fontStyle: 'bold',
+            halign: 'center'
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245]
+          },
+          margin: { top: 35 },
+          
+        });
+        
+        // Save the PDF
+        doc.save('MyCollection_Lotterich.pdf');
+        setShowExportModal(false);
+        toast.success('ส่งออกไฟล์ PDF สำเร็จ');
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        toast.error('เกิดข้อผิดพลาดในการสร้างไฟล์ PDF');
+      }
+    };
 
     return (
       <div className="container-fluid">
@@ -717,7 +860,7 @@ const CollectionPage = () => {
               <button className="btn filter-button" onClick={() => setShowFilterModal(true)}>
                         <FaFilter /> Filter
                     </button>
-              <button className="btn export-button" onClick={handleExport}>
+              <button className="btn export-button" onClick={() => setShowExportModal(true)}>
                         <FaFileExport /> Export
                     </button>
                 </div>
@@ -755,12 +898,12 @@ const CollectionPage = () => {
                     item.prizeStatus === 'announced' ? 'announced' : ''
                   }`}></div>
                   <div className="middle-collection">
+                    <h1 className="lottery-number">เลข {item.lotteryNumber}</h1>
                     {item.prizeDate && (
                       <div className="prize-draw-date-top">
                         งวดประจำวันที่ {formatThaiDate(item.prizeDate)}
                       </div>
                     )}
-                    <h1 className="lottery-number">เลข {item.lotteryNumber}</h1>
                     <div className="lottery-details">
                       <div className="detail-box ticket-count-box">
                         <div className="ticket-count">จำนวน {item.ticketCount} ใบ (฿{item.ticketPrice}/ใบ)</div>
@@ -1313,6 +1456,41 @@ const CollectionPage = () => {
               รีเซ็ต
             </Button>
           </Modal.Footer>
+        </Modal>
+
+        {/* Export Format Selection Modal */}
+        <Modal 
+          show={showExportModal} 
+          onHide={() => setShowExportModal(false)} 
+          centered
+          dialogClassName="export-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>เลือกรูปแบบการส่งออก</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="text-center p-4">
+            <div className="d-flex justify-content-center gap-4">
+              <Button 
+                variant="outline-primary" 
+                className="export-option-btn"
+                onClick={() => {
+                  handleExport();
+                  setShowExportModal(false);
+                }}
+              >
+                <FaFileExport className="mb-2" style={{ fontSize: '2rem' }} />
+                <div>CSV</div>
+              </Button>
+              <Button 
+                variant="outline-primary" 
+                className="export-option-btn"
+                onClick={handlePDFExport}
+              >
+                <FaFileExport className="mb-2" style={{ fontSize: '2rem' }} />
+                <div>PDF</div>
+              </Button>
+            </div>
+          </Modal.Body>
         </Modal>
                     </div>
                 );
