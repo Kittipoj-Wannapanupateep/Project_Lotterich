@@ -67,7 +67,7 @@ func main() {
 
 	// Configure CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:4173"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:4173", "https://project-lotterich.onrender.com", "https://project-lotterich-git-main-kittipojwann-kmuttacths-projects.vercel.app/", "https://project-lotterich-gy8r1flro-kittipojwann-kmuttacths-projects.vercel.app/"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
