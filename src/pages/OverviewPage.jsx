@@ -91,7 +91,7 @@ const OverviewPage = () => {
                         }
                         countWin += 1;
                         countValid += 1;
-                    } else if (item.prizeType === '' || !item.prizeType) {
+                    } else if (item.prizeType === '' || !item.prizeType || item.prizeType === 'lose') {
                         countLose += 1;
                         countValid += 1;
                     }
