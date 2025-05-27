@@ -65,6 +65,11 @@ func main() {
 	// Create Gin router
 	router := gin.Default()
 
+	// Health check route for Render
+	router.GET("/", func(c *gin.Context) {
+		c.String(200, "OK")
+	})
+
 	// Configure CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:5173",
