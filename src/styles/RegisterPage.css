@@ -283,7 +283,6 @@
         color: #999999;
     }
     .form-options {
-        flex-direction: column;
         gap: 1rem;
         align-items: flex-start;
         margin: 1.25rem 0;
