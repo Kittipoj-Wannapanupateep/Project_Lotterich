@@ -82,7 +82,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="welcome-image-container">
-              <img src="https://cms.kapook.com/uploads/tag/4/ID_3370_58818fdf47e39.jpg" alt="Welcome Image" className="welcome-image" />
+              <img src="/Image/เริ่มแนะนำเว็ป.jpg" alt="Welcome Image" className="welcome-image" />
             </div>
           </div>
         </div>
