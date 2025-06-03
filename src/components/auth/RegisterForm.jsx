@@ -18,7 +18,7 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     if (!agreeTerms) {
-      setError('คุณต้องยอมรับข้อกำหนดและเงื่อนไข')
+      setError('คุณต้องยินยอมการสร้างบัญชี')
       return
     }
     setIsSubmitting(true)
@@ -136,7 +136,7 @@ const RegisterForm = () => {
               />
               <span className="slider round"></span>
             </label>
-            <span className="terms-text">ฉันยอมรับข้อกำหนดและเงื่อนไข</span>
+            <span className="terms-text">ยินยอมการสร้างบัญชี</span>
           </div>
         </div>
         <button type="submit" className="create-account-button" disabled={isSubmitting}>
