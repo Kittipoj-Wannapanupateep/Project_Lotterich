@@ -39,23 +39,23 @@ func (h *CollectionHandler) Create(c *gin.Context) {
 
 	var input models.Collection
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data: " + err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ข้อมูลที่กรอกไม่ถูกต้อง: " + err.Error()})
 		return
 	}
 
 	// Validate required fields
 	if input.TicketNumber == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Ticket number is required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณากรอกหมายเลขสลาก"})
 		return
 	}
 
 	if input.TicketQuantity <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Ticket quantity must be greater than 0"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "จำนวนที่ซื้อต้องมากกว่า 0"})
 		return
 	}
 
 	if input.TicketAmount <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Ticket amount must be greater than 0"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "จำนวนเงินสลากต้องมากกว่า 0 บาท"})
 		return
 	}
 
@@ -121,6 +121,18 @@ func (h *CollectionHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if input.TicketNumber == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณากรอกหมายเลขสลาก"})
+		return
+	}
+	if input.TicketQuantity <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "จำนวนที่ซื้อต้องมากกว่า 0"})
+		return
+	}
+	if input.TicketAmount <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "จำนวนเงินสลากต้องมากกว่า 0 บาท"})
+		return
+	}
 	input.ID = objID
 	input.Email = email
 
@@ -159,6 +171,7 @@ func (h *CollectionHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update item"})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Updated"})
 }
 

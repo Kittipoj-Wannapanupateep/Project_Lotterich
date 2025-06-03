@@ -69,10 +69,13 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.String(200, "OK")
 	})
+	router.HEAD("/", func(c *gin.Context) {
+		c.Status(200)
+	})
 
 	// Configure CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:4173", "https://project-lotterich.vercel.app"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:5174", "https://project-lotterich.vercel.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
