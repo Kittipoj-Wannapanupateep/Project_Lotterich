@@ -269,6 +269,17 @@ const AuthenticatedHome = () => {
                   </div>
                 </div>
               </div>
+              <div className="telegram-notification fade-in-up">
+                📢 รับการแจ้งเตือนผลรางวัลทุกครั้งที่มีการประกาศงวดใหม่ได้ที่
+                <a
+                  href="https://t.me/+QqcjNXNHLRxhNGJl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="telegram-link"
+                >
+                  กลุ่ม Telegram
+                </a>
+              </div>
             </div>
           </div>
         </div>

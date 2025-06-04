@@ -827,3 +827,50 @@ a {
         font-size: 1rem;
     }
 }
+
+.telegram-notification {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1.1rem;
+  color: #FFD700;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(-60px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  animation: fadeInDown 0.6s ease-out forwards;
+}
+
+.telegram-notification.visible,
+.telegram-notification.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.telegram-link {
+  color: #00BFFF;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
