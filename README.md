@@ -32,9 +32,6 @@ The project is divided into two main folders:
 ### Frontend
 
 ```bash
-# Navigate to project root
-cd /home/project
-
 # Install dependencies
 npm install
 
@@ -73,20 +70,3 @@ JWT_EXPIRATION=24h
 
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and get JWT token
-
-### Users
-
-- `GET /api/users/me` - Get current user information
-
-### Products
-
-- `GET /api/products` - Get all products for authenticated user
-- `GET /api/products/:id` - Get a specific product
-- `POST /api/products` - Create a new product
-- `PUT /api/products/:id` - Update an existing product
-- `DELETE /api/products/:id` - Delete a product
-
-## License
-
-This project is licensed under the MIT License.# Fullstack_Lotterich
-# Fullstack_Lotterich
